@@ -2,9 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { QUESTIONS, SERVICES, SERVICE_TAB_NAMES } from "@/lib/data";
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
 export async function POST(req: NextRequest) {
+  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
   try {
     const { answers, selectedServices, clientName } = await req.json();
 
@@ -93,7 +92,7 @@ Output format:
 }`;
 
     const message = await client.messages.create({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-opus-4-5",
       max_tokens: 8192,
       messages: [{ role: "user", content: prompt }],
     });
