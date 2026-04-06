@@ -6,6 +6,19 @@ import {
   SERVICE_TAB_NAMES, STATUS_COLORS,
   type PlanRow, type Submission,
 } from "@/lib/data";
+import {
+  CalibrateLogoWhite,
+  ServiceIcon,
+  SectionIcon,
+  ClipboardIcon,
+  ChartIcon,
+  UsersIcon,
+  SparkIcon,
+  InfoIcon,
+  ArrowRightIcon,
+  ArrowLeftIcon,
+  CheckCircleIcon,
+} from "@/components/icons";
 
 type Answers = Record<string, string>;
 
@@ -25,12 +38,10 @@ export default function OnboardingApp() {
   const [genStep, setGenStep]               = useState(0);
   const [genError, setGenError]             = useState("");
 
-  // Active plan state
   const [submission, setSubmission]         = useState<Submission | null>(null);
   const [activeTab, setActiveTab]           = useState<string>("");
   const [saving, setSaving]                 = useState<Record<string, boolean>>({});
 
-  // Clients list
   const [clients, setClients]               = useState<Submission[]>([]);
   const [loadingClients, setLoadingClients] = useState(false);
 
@@ -98,7 +109,6 @@ export default function OnboardingApp() {
       const { planData, clientLabel } = await res.json();
       setGenStep(3);
 
-      // Save to Supabase
       const saveRes = await fetch("/api/save-submission", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -123,8 +133,7 @@ export default function OnboardingApp() {
       };
 
       setSubmission(newSubmission);
-      const firstTab = Object.keys(planData)[0];
-      setActiveTab(firstTab);
+      setActiveTab(Object.keys(planData)[0]);
       setGenerating(false);
       goTo("plan");
     } catch (err: unknown) {
@@ -140,7 +149,6 @@ export default function OnboardingApp() {
     if (!submission) return;
     const tabName = activeTab;
 
-    // Optimistic update
     setSubmission((prev) => {
       if (!prev) return prev;
       const tab = prev.plan_data[tabName];
@@ -200,7 +208,7 @@ export default function OnboardingApp() {
     setActiveTab("");
   };
 
-  // ── Render ───────────────────────────────────────────────
+  // ── Derived ──────────────────────────────────────────────
 
   const planTabs = submission ? Object.keys(submission.plan_data) : [];
 
@@ -221,40 +229,72 @@ export default function OnboardingApp() {
     return Math.round((done / all.length) * 100);
   }, [submission]);
 
+  // ── Render ───────────────────────────────────────────────
+
   return (
     <div className="flex flex-col h-screen overflow-hidden" style={{ background: "var(--gray-bg)" }}>
+
       {/* ── Header ── */}
       <header
-        className="flex items-center justify-between px-8 shrink-0 shadow-md z-20"
-        style={{ background: "var(--blue)", height: 64 }}
+        className="flex items-center justify-between px-8 shrink-0 z-20"
+        style={{
+          background: "var(--blue)",
+          height: 64,
+          boxShadow: "0 1px 0 rgba(255,255,255,0.08), 0 4px 16px rgba(0,0,0,0.18)",
+        }}
       >
         <button
           onClick={() => goTo("welcome")}
-          className="text-white font-bold text-lg tracking-wide hover:opacity-80 transition-opacity flex items-center gap-3"
+          className="flex items-center gap-3 hover:opacity-85 transition-opacity"
         >
-          <span>Calibrate<span style={{ color: "var(--teal)" }}>HCM</span></span>
-          <span className="text-white/40 font-normal text-sm">HR Services Onboarding</span>
+          <CalibrateLogoWhite height={28} />
+          <div
+            className="h-5 w-px mx-1"
+            style={{ background: "rgba(255,255,255,0.2)" }}
+          />
+          <span
+            className="text-sm font-medium tracking-wide"
+            style={{ color: "rgba(255,255,255,0.65)" }}
+          >
+            HR Services Onboarding
+          </span>
         </button>
-        <div className="flex items-center gap-3">
+
+        <div className="flex items-center gap-2">
           {submission && (
             <button
               onClick={() => goTo("plan")}
-              className="text-xs px-3 py-1.5 rounded-lg font-medium transition-all hover:opacity-80"
-              style={{ background: "rgba(59,180,193,0.2)", color: "var(--teal-light)", border: "1px solid rgba(59,180,193,0.35)" }}
+              className="flex items-center gap-1.5 text-xs px-3.5 py-2 rounded-lg font-medium transition-all hover:opacity-80"
+              style={{
+                background: "rgba(59,180,193,0.18)",
+                color: "var(--teal-light)",
+                border: "1px solid rgba(59,180,193,0.3)",
+              }}
             >
-              View Active Plan
+              <ChartIcon size={13} color="currentColor" />
+              Active Plan
             </button>
           )}
           <button
             onClick={() => { goTo("clients"); loadClients(); }}
-            className="text-xs px-3 py-1.5 rounded-lg font-medium transition-all hover:opacity-80"
-            style={{ background: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.75)", border: "1px solid rgba(255,255,255,0.2)" }}
+            className="flex items-center gap-1.5 text-xs px-3.5 py-2 rounded-lg font-medium transition-all hover:opacity-80"
+            style={{
+              background: "rgba(255,255,255,0.08)",
+              color: "rgba(255,255,255,0.65)",
+              border: "1px solid rgba(255,255,255,0.15)",
+            }}
           >
+            <UsersIcon size={13} color="currentColor" />
             All Clients
           </button>
           <div
-            className="text-xs font-semibold tracking-widest uppercase px-3 py-1 rounded-full border"
-            style={{ color: "var(--teal-light)", borderColor: "rgba(59,180,193,0.4)", background: "rgba(59,180,193,0.12)" }}
+            className="text-[11px] font-semibold tracking-widest uppercase px-3 py-1.5 rounded-full ml-1"
+            style={{
+              color: "var(--teal-light)",
+              background: "rgba(59,180,193,0.12)",
+              border: "1px solid rgba(59,180,193,0.3)",
+              letterSpacing: "0.08em",
+            }}
           >
             Client Kickoff Tool
           </div>
@@ -262,85 +302,163 @@ export default function OnboardingApp() {
       </header>
 
       <div className="flex flex-1 overflow-hidden">
+
         {/* ── Sidebar ── */}
         {view !== "plan" && view !== "clients" && (
           <nav
-            className="w-64 shrink-0 overflow-y-auto py-6 flex flex-col gap-0.5"
+            className="w-60 shrink-0 overflow-y-auto py-5 flex flex-col"
             style={{ background: "#163d6e" }}
           >
-            <SidebarLabel>Navigation</SidebarLabel>
-            <SidebarItem active={view === "welcome"} onClick={() => goTo("welcome")}>Getting Started</SidebarItem>
-            <SidebarItem active={view === "services"} onClick={() => goTo("services")}>Service Selection</SidebarItem>
+            <SidebarSection label="Navigation">
+              <SidebarItem
+                active={view === "welcome"}
+                onClick={() => goTo("welcome")}
+                icon={<ClipboardIcon size={15} color="currentColor" />}
+              >
+                Getting Started
+              </SidebarItem>
+              <SidebarItem
+                active={view === "services"}
+                onClick={() => goTo("services")}
+                icon={<UsersIcon size={15} color="currentColor" />}
+              >
+                Service Selection
+              </SidebarItem>
+            </SidebarSection>
 
-            <SidebarLabel>Questionnaire</SidebarLabel>
-            {SECTION_VIEWS.map((sv, i) => {
-              const sk = SECTION_KEYS[i];
-              const cnt = answeredCount(sk);
-              const tot = totalCount(sk);
-              return (
-                <SidebarItem key={sv} active={view === sv} onClick={() => goTo(sv as AppView)}>
-                  {SECTION_META[sk]?.title ?? sk}
-                  {sk === "peo" ? (
-                    <span className="ml-auto text-[9px] font-semibold tracking-wide uppercase px-1.5 py-0.5 rounded-full border" style={{ color: "rgba(59,180,193,0.8)", borderColor: "rgba(59,180,193,0.3)" }}>Optional</span>
-                  ) : cnt > 0 ? (
-                    <span className="ml-auto text-[10px]" style={{ color: view === sv ? "var(--teal-light)" : "rgba(255,255,255,0.35)" }}>{cnt}/{tot}</span>
-                  ) : null}
-                </SidebarItem>
-              );
-            })}
+            <SidebarSection label="Questionnaire">
+              {SECTION_VIEWS.map((sv, i) => {
+                const sk = SECTION_KEYS[i];
+                const cnt = answeredCount(sk);
+                const tot = totalCount(sk);
+                const isActive = view === sv;
+                return (
+                  <SidebarItem
+                    key={sv}
+                    active={isActive}
+                    onClick={() => goTo(sv as AppView)}
+                    icon={<SectionIcon sectionKey={sk} size={15} color="currentColor" />}
+                    badge={
+                      sk === "peo" ? (
+                        <span
+                          className="text-[9px] font-semibold tracking-wide uppercase px-1.5 py-0.5 rounded-full"
+                          style={{ color: "rgba(59,180,193,0.75)", background: "rgba(59,180,193,0.12)", border: "1px solid rgba(59,180,193,0.25)" }}
+                        >
+                          Opt.
+                        </span>
+                      ) : cnt > 0 ? (
+                        <span
+                          className="text-[10px] tabular-nums"
+                          style={{ color: isActive ? "var(--teal-light)" : "rgba(255,255,255,0.35)" }}
+                        >
+                          {cnt}/{tot}
+                        </span>
+                      ) : undefined
+                    }
+                  >
+                    {SECTION_META[sk]?.title ?? sk}
+                  </SidebarItem>
+                );
+              })}
+            </SidebarSection>
 
-            <SidebarLabel>Output</SidebarLabel>
-            <SidebarItem active={view === "generate"} onClick={() => goTo("generate")}>Generate Project Plan</SidebarItem>
+            <SidebarSection label="Output">
+              <SidebarItem
+                active={view === "generate"}
+                onClick={() => goTo("generate")}
+                icon={<SparkIcon size={15} color="currentColor" />}
+              >
+                Generate Project Plan
+              </SidebarItem>
+            </SidebarSection>
           </nav>
         )}
 
         {/* ── Main ── */}
         <main ref={mainRef} className="flex-1 overflow-y-auto flex flex-col">
 
-          {/* WELCOME */}
+          {/* ── WELCOME ── */}
           {view === "welcome" && (
             <div className="flex flex-col items-center justify-center flex-1 px-10 py-16 text-center">
-              {/* Hero gradient bar */}
-              <div className="w-full max-w-2xl h-1 rounded-full mb-10 calibrate-gradient" />
-
-              <div className="w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-7 shadow-lg text-4xl calibrate-gradient">
-                📋
+              <div
+                className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-lg calibrate-gradient"
+              >
+                <ClipboardIcon size={28} color="white" />
               </div>
+
               <h1 className="text-3xl font-bold mb-3 calibrate-text-gradient">
                 Client Onboarding Kickoff Tool
               </h1>
-              <p className="text-gray-500 max-w-lg mb-10 text-sm leading-relaxed">
-                Complete the questionnaire during or after the client kickoff meeting. Claude will generate a fully-populated, interactive project plan — living right here in the portal.
+              <p className="text-gray-500 max-w-lg mb-12 text-sm leading-relaxed">
+                Complete the questionnaire during or after the client kickoff meeting.
+                Claude will generate a fully-populated, interactive project plan — living
+                right here in the portal.
               </p>
-              <div className="grid grid-cols-3 gap-4 max-w-2xl w-full mb-10">
+
+              <div className="grid grid-cols-3 gap-5 max-w-2xl w-full mb-12">
                 {[
-                  { n: 1, title: "Select Services", desc: "Choose which HR service suites the client is enrolling in." },
-                  { n: 2, title: "Complete Questionnaire", desc: "Answer questions across each relevant service area." },
-                  { n: 3, title: "Live Project Plan", desc: "Claude builds an interactive plan. Update status, owners, and dates in real time." },
-                ].map(({ n, title, desc }) => (
-                  <div key={n} className="bg-white rounded-xl border p-5 text-left shadow-sm" style={{ borderColor: "#e2e8f0" }}>
-                    <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white mb-3 calibrate-gradient">{n}</div>
-                    <h4 className="font-semibold text-sm mb-1" style={{ color: "var(--blue)" }}>{title}</h4>
-                    <p className="text-xs text-gray-500">{desc}</p>
+                  {
+                    n: 1,
+                    icon: <UsersIcon size={20} color="white" />,
+                    title: "Select Services",
+                    desc: "Choose which HR service suites the client is enrolling in.",
+                  },
+                  {
+                    n: 2,
+                    icon: <ClipboardIcon size={20} color="white" />,
+                    title: "Complete Questionnaire",
+                    desc: "Answer questions across each relevant service area.",
+                  },
+                  {
+                    n: 3,
+                    icon: <ChartIcon size={20} color="white" />,
+                    title: "Live Project Plan",
+                    desc: "Claude builds an interactive plan with status, owners, and dates.",
+                  },
+                ].map(({ n, icon, title, desc }) => (
+                  <div
+                    key={n}
+                    className="bg-white rounded-xl border p-6 text-left shadow-sm"
+                    style={{ borderColor: "var(--border)" }}
+                  >
+                    <div
+                      className="w-9 h-9 rounded-xl flex items-center justify-center mb-4 calibrate-gradient shadow-sm"
+                    >
+                      {icon}
+                    </div>
+                    <div
+                      className="text-[10px] font-bold uppercase tracking-widest mb-1"
+                      style={{ color: "var(--teal)" }}
+                    >
+                      Step {n}
+                    </div>
+                    <h4 className="font-semibold text-sm mb-1.5" style={{ color: "var(--blue)" }}>{title}</h4>
+                    <p className="text-xs text-gray-500 leading-relaxed">{desc}</p>
                   </div>
                 ))}
               </div>
+
               <button
                 onClick={() => goTo("services")}
-                className="px-9 py-3.5 rounded-xl text-white font-medium shadow-md hover:opacity-90 transition-all calibrate-gradient"
+                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl text-white font-medium shadow-md hover:opacity-90 transition-all calibrate-gradient"
               >
-                Start New Client →
+                Start New Client
+                <ArrowRightIcon size={15} color="white" />
               </button>
             </div>
           )}
 
-          {/* SERVICES */}
+          {/* ── SERVICES ── */}
           {view === "services" && (
             <div className="flex flex-col flex-1">
-              <div className="flex-1 px-10 py-10">
-                <h2 className="text-2xl font-bold mb-2" style={{ color: "var(--blue)" }}>Which services is this client enrolling in?</h2>
-                <p className="text-gray-500 text-sm mb-8">Select all that apply. Only relevant questionnaire sections and project plan tabs will be generated.</p>
-                <div className="grid grid-cols-3 gap-4">
+              <PageHeader
+                eyebrow="Step 1 of 2"
+                title="Service Selection"
+                subtitle="Choose which HR service suites this client is enrolling in. Only relevant sections will be included in the questionnaire and project plan."
+              />
+
+              <div className="flex-1 px-10 py-8">
+                <div className="grid grid-cols-3 gap-4 max-w-4xl">
                   {SERVICES.map((svc) => {
                     const sel = selectedServices.has(svc.id);
                     return (
@@ -354,34 +472,53 @@ export default function OnboardingApp() {
                             return next;
                           });
                         }}
-                        className="relative bg-white rounded-xl border-2 p-5 text-left cursor-pointer transition-all hover:shadow-md"
+                        className="relative bg-white rounded-xl border-2 p-5 text-left cursor-pointer transition-all hover:shadow-md group"
                         style={{
-                          borderColor: sel ? "var(--blue)" : "#e2e8f0",
-                          background: sel ? "rgba(26,75,132,0.04)" : "white",
+                          borderColor: sel ? "var(--blue)" : "var(--border)",
+                          background: sel ? "rgba(26,75,132,0.03)" : "white",
                         }}
                       >
+                        {/* Checkbox */}
                         <div
-                          className="absolute top-3.5 right-3.5 w-5 h-5 rounded-full flex items-center justify-center text-xs text-white transition-all"
+                          className="absolute top-4 right-4 w-5 h-5 rounded-full flex items-center justify-center transition-all"
                           style={{
                             background: sel ? "var(--blue)" : "transparent",
                             border: sel ? "2px solid var(--blue)" : "2px solid #cbd5e0",
                           }}
                         >
-                          {sel && "✓"}
+                          {sel && <CheckCircleIcon size={12} color="white" />}
                         </div>
-                        <div className="text-2xl mb-2">{svc.icon}</div>
-                        <h4 className="font-semibold text-sm mb-1" style={{ color: "var(--blue)" }}>{svc.name}</h4>
+
+                        {/* Icon */}
+                        <div
+                          className="w-10 h-10 rounded-xl flex items-center justify-center mb-3 transition-all"
+                          style={{
+                            background: sel ? "var(--blue)" : "var(--teal-pale)",
+                            color: sel ? "white" : "var(--blue)",
+                          }}
+                        >
+                          <ServiceIcon iconId={svc.iconId} size={20} color="currentColor" />
+                        </div>
+
+                        <h4 className="font-semibold text-sm mb-1" style={{ color: "var(--blue)" }}>
+                          {svc.name}
+                        </h4>
                         <p className="text-xs text-gray-500">{svc.desc}</p>
                       </button>
                     );
                   })}
                 </div>
+
+                <p className="text-xs text-gray-400 mt-5">
+                  {selectedServices.size} service{selectedServices.size !== 1 ? "s" : ""} selected
+                </p>
               </div>
+
               <FooterNav onBack={() => goTo("welcome")} onNext={() => goTo("q-general")} />
             </div>
           )}
 
-          {/* QUESTIONNAIRE SECTIONS */}
+          {/* ── QUESTIONNAIRE SECTIONS ── */}
           {SECTION_VIEWS.map((sv, i) => {
             if (view !== sv) return null;
             const sk = SECTION_KEYS[i];
@@ -392,30 +529,53 @@ export default function OnboardingApp() {
 
             return (
               <div key={sv} className="flex flex-col flex-1">
+                {/* Client name bar — only on general */}
                 {sk === "general" && (
-                  <div className="flex items-center gap-4 px-10 py-3 bg-white border-b" style={{ borderColor: "#e2e8f0" }}>
-                    <label className="text-sm font-medium text-gray-500 whitespace-nowrap">Client Name:</label>
+                  <div
+                    className="flex items-center gap-3 px-10 py-3 bg-white border-b"
+                    style={{ borderColor: "var(--border)" }}
+                  >
+                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-widest whitespace-nowrap">
+                      Client Name
+                    </label>
+                    <div
+                      className="h-4 w-px"
+                      style={{ background: "var(--border)" }}
+                    />
                     <input
                       type="text"
                       value={clientName}
                       onChange={(e) => setClientName(e.target.value)}
                       placeholder="e.g. Renew Wellness Brands"
-                      className="max-w-xs px-3 py-2 rounded-lg border text-sm outline-none bg-gray-50"
-                      style={{ borderColor: "#e2e8f0" }}
+                      className="flex-1 max-w-sm px-3 py-1.5 rounded-lg border text-sm outline-none bg-gray-50 focus:bg-white transition-all"
+                      style={{ borderColor: "var(--border)" }}
                     />
                   </div>
                 )}
 
-                <div className="px-10 py-7 bg-white border-b shadow-sm sticky top-0 z-10" style={{ borderColor: "#e2e8f0" }}>
-                  <div className="text-[10px] font-bold tracking-widest uppercase mb-1" style={{ color: "var(--teal)" }}>{meta.eyebrow}</div>
-                  <div className="text-xl font-bold" style={{ color: "var(--blue)" }}>{meta.title}</div>
-                  <div className="text-sm text-gray-500 mt-1">{meta.subtitle}</div>
-                </div>
+                <PageHeader
+                  eyebrow={meta.eyebrow}
+                  title={meta.title}
+                  subtitle={meta.subtitle}
+                  icon={<SectionIcon sectionKey={sk} size={20} color="var(--teal)" />}
+                  progress={stepNum > 0 ? { current: stepNum, total: totalSteps } : undefined}
+                />
 
                 {isOptional && (
-                  <div className="mx-10 mt-5 rounded-xl border px-5 py-4 flex gap-3 text-sm" style={{ background: "var(--teal-pale)", borderColor: "rgba(59,180,193,0.3)", color: "var(--blue)" }}>
-                    <span className="text-base mt-0.5">💡</span>
-                    <div><strong>Optional section.</strong> If this client is not leaving a PEO, leave all questions blank and the PEO Transition tab will be excluded from the project plan.</div>
+                  <div
+                    className="mx-10 mt-6 rounded-xl border px-5 py-4 flex gap-3 text-sm"
+                    style={{
+                      background: "var(--teal-pale)",
+                      borderColor: "rgba(59,180,193,0.3)",
+                      color: "var(--blue)",
+                    }}
+                  >
+                    <InfoIcon size={18} color="var(--teal)" className="shrink-0 mt-0.5" />
+                    <p>
+                      <strong>Optional section.</strong> If this client is not leaving a PEO,
+                      leave all questions blank — the PEO Transition tab will be excluded from
+                      the generated project plan.
+                    </p>
                   </div>
                 )}
 
@@ -424,35 +584,49 @@ export default function OnboardingApp() {
                     const isNewSub = q.sub !== lastSub;
                     if (isNewSub) lastSub = q.sub;
                     const hasAnswer = !!answers[q.key]?.trim();
+
                     return (
                       <div key={q.key}>
                         {isNewSub && (
                           <div
-                            className="text-[10px] font-bold tracking-widest uppercase mt-7 mb-3.5 pb-1.5 border-b-2"
-                            style={{ color: "var(--blue)", borderColor: "var(--teal)" }}
+                            className="flex items-center gap-2 mt-8 mb-4"
                           >
-                            {q.sub}
+                            <div
+                              className="h-px flex-1"
+                              style={{ background: "var(--border)" }}
+                            />
+                            <span
+                              className="text-[10px] font-bold tracking-widest uppercase px-3"
+                              style={{ color: "var(--blue)", whiteSpace: "nowrap" }}
+                            >
+                              {q.sub}
+                            </span>
+                            <div
+                              className="h-px flex-1"
+                              style={{ background: "var(--border)" }}
+                            />
                           </div>
                         )}
                         <div
-                          className="bg-white rounded-xl border mb-2.5 px-5 py-4 transition-all focus-within:shadow-sm"
-                          style={{ borderColor: hasAnswer ? "var(--teal)" : "#e2e8f0" }}
+                          className="bg-white rounded-xl border mb-3 px-5 py-4 transition-all focus-within:shadow-sm"
+                          style={{ borderColor: hasAnswer ? "var(--teal)" : "var(--border)" }}
                         >
-                          <div className="flex gap-2 items-start mb-2">
-                            <span
-                              className="text-[10px] font-semibold px-1.5 py-0.5 rounded shrink-0 mt-0.5"
-                              style={{ background: "var(--teal-pale)", color: "var(--blue)" }}
-                            >Q</span>
-                            <span className="text-sm font-medium" style={{ color: "var(--text-dark)" }}>{q.q}</span>
-                          </div>
+                          <label className="block text-sm font-medium mb-2.5" style={{ color: "var(--text-dark)" }}>
+                            {q.q}
+                          </label>
                           <textarea
                             value={answers[q.key] || ""}
                             onChange={(e) => setAnswers((prev) => ({ ...prev, [q.key]: e.target.value }))}
                             placeholder="Enter answer here..."
                             rows={3}
-                            className="w-full text-sm px-3 py-2.5 rounded-lg border bg-gray-50 outline-none resize-y transition-all focus:bg-white"
-                            style={{ borderColor: "#e2e8f0", minHeight: 72 }}
+                            className="w-full text-sm px-3 py-2.5 rounded-lg border bg-gray-50 outline-none resize-y transition-all focus:bg-white focus:border-teal-400"
+                            style={{ borderColor: "var(--border)", minHeight: 72 }}
                           />
+                          {hasAnswer && (
+                            <div className="flex justify-end mt-1.5">
+                              <CheckCircleIcon size={14} color="var(--teal)" />
+                            </div>
+                          )}
                         </div>
                       </div>
                     );
@@ -460,86 +634,151 @@ export default function OnboardingApp() {
                 </div>
 
                 {isOptional ? (
-                  <FooterNav onBack={goPrev} onNext={() => goTo("generate")} nextLabel="Review & Generate →" progress={progressPct} progressLabel={`${stepNum} of ${totalSteps}`} />
+                  <FooterNav
+                    onBack={goPrev}
+                    onNext={() => goTo("generate")}
+                    nextLabel="Review & Generate"
+                    progress={progressPct}
+                    progressLabel={`${stepNum} of ${totalSteps}`}
+                  />
                 ) : (
-                  <FooterNav onBack={goPrev} onNext={goNext} progress={progressPct} progressLabel={`${stepNum} of ${totalSteps}`} />
+                  <FooterNav
+                    onBack={goPrev}
+                    onNext={goNext}
+                    progress={progressPct}
+                    progressLabel={`${stepNum} of ${totalSteps}`}
+                  />
                 )}
               </div>
             );
           })}
 
-          {/* GENERATE */}
+          {/* ── GENERATE ── */}
           {view === "generate" && (
             <div className="flex items-center justify-center flex-1 px-10 py-16">
-              <div className="bg-white rounded-2xl border shadow-xl p-12 max-w-xl w-full text-center" style={{ borderColor: "#e2e8f0" }}>
-
-                {!generating && (
+              <div
+                className="bg-white rounded-2xl border shadow-lg p-10 max-w-lg w-full"
+                style={{ borderColor: "var(--border)" }}
+              >
+                {!generating ? (
                   <>
-                    <h2 className="text-2xl font-bold mb-2 calibrate-text-gradient">Ready to Generate</h2>
-                    <p className="text-gray-500 text-sm mb-8">Claude will interpret your answers and build a fully-structured, interactive project plan inside this portal.</p>
-
-                    <div className="flex flex-wrap gap-2 justify-center mb-6">
-                      {SERVICES.filter((s) => selectedServices.has(s.id)).map((s) => (
-                        <span
-                          key={s.id}
-                          className="text-xs font-medium px-3 py-1 rounded-full border"
-                          style={{ color: "var(--blue)", background: "var(--teal-pale)", borderColor: "rgba(59,180,193,0.3)" }}
-                        >
-                          {s.icon} {s.name}
-                        </span>
-                      ))}
+                    <div
+                      className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-6 calibrate-gradient shadow-md"
+                    >
+                      <SparkIcon size={26} color="white" />
                     </div>
 
-                    <div className="rounded-xl border text-left p-4 mb-7 text-sm" style={{ background: "#f7fafc", borderColor: "#e2e8f0" }}>
+                    <h2 className="text-2xl font-bold mb-2 text-center calibrate-text-gradient">
+                      Ready to Generate
+                    </h2>
+                    <p className="text-gray-500 text-sm text-center mb-7">
+                      Claude will interpret your answers and build a fully-structured,
+                      interactive project plan inside this portal.
+                    </p>
+
+                    {/* Summary card */}
+                    <div
+                      className="rounded-xl border mb-6 overflow-hidden"
+                      style={{ borderColor: "var(--border)" }}
+                    >
                       {[
                         ["Client", clientName || answers["co_name"] || "Not entered"],
-                        ["Services", selectedServices.size.toString()],
-                        ["Answers", `${Object.values(answers).filter(v => v?.trim()).length} of ${Object.values(QUESTIONS).flat().length}`],
-                        ["PEO Transition", isPeoActive() ? "✓ Will be included" : "Skipped"],
-                      ].map(([label, val]) => (
-                        <div key={label} className="flex justify-between items-center py-1.5 border-b last:border-0" style={{ borderColor: "#f0f4f8" }}>
+                        ["Services selected", selectedServices.size.toString()],
+                        ["Questions answered", `${Object.values(answers).filter(v => v?.trim()).length} of ${Object.values(QUESTIONS).flat().length}`],
+                        ["PEO Transition", isPeoActive() ? "Included" : "Skipped"],
+                      ].map(([label, val], i, arr) => (
+                        <div
+                          key={label}
+                          className="flex justify-between items-center px-4 py-3 text-sm"
+                          style={{
+                            background: i % 2 === 0 ? "#f7fafc" : "white",
+                            borderBottom: i < arr.length - 1 ? `1px solid var(--border)` : "none",
+                          }}
+                        >
                           <span className="text-gray-500">{label}</span>
                           <span className="font-semibold" style={{ color: "var(--blue)" }}>{val}</span>
                         </div>
                       ))}
                     </div>
 
+                    {/* Selected services pills */}
+                    <div className="flex flex-wrap gap-2 mb-7">
+                      {SERVICES.filter((s) => selectedServices.has(s.id)).map((s) => (
+                        <span
+                          key={s.id}
+                          className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full"
+                          style={{
+                            color: "var(--blue)",
+                            background: "var(--teal-pale)",
+                            border: "1px solid rgba(59,180,193,0.25)",
+                          }}
+                        >
+                          <ServiceIcon iconId={s.iconId} size={12} color="var(--blue)" />
+                          {s.name}
+                        </span>
+                      ))}
+                    </div>
+
                     {genError && (
-                      <div className="mb-4 p-3 rounded-lg text-sm text-red-700 bg-red-50 border border-red-200">{genError}</div>
+                      <div className="mb-5 p-3 rounded-lg text-sm text-red-700 bg-red-50 border border-red-200">
+                        {genError}
+                      </div>
                     )}
 
                     <button
                       onClick={startGeneration}
-                      className="px-8 py-3.5 rounded-xl text-white font-medium shadow-lg hover:opacity-90 transition-all text-sm calibrate-gradient"
+                      className="w-full inline-flex items-center justify-center gap-2 py-3.5 rounded-xl text-white font-medium shadow-md hover:opacity-90 transition-all calibrate-gradient"
                     >
-                      ✦ Generate Project Plan
+                      <SparkIcon size={16} color="white" />
+                      Generate Project Plan
                     </button>
                   </>
-                )}
-
-                {generating && (
-                  <div className="flex flex-col items-center gap-5">
-                    <div className="w-12 h-12 border-4 border-gray-100 rounded-full animate-spin" style={{ borderTopColor: "var(--teal)" }} />
-                    <p className="text-sm font-medium" style={{ color: "var(--blue)" }}>Building your project plan…</p>
-                    <div className="flex flex-col gap-2.5 text-left min-w-72">
+                ) : (
+                  <div className="flex flex-col items-center gap-6 py-4">
+                    <div
+                      className="w-14 h-14 rounded-full border-4 animate-spin"
+                      style={{ borderColor: "var(--teal-pale)", borderTopColor: "var(--teal)" }}
+                    />
+                    <div className="text-center">
+                      <p className="font-semibold mb-1" style={{ color: "var(--blue)" }}>
+                        Building your project plan…
+                      </p>
+                      <p className="text-xs text-gray-400">This takes about 30 seconds</p>
+                    </div>
+                    <div className="flex flex-col gap-3 w-full max-w-xs">
                       {[
-                        "Reading questionnaire answers...",
-                        "Asking Claude to analyze responses...",
-                        "Saving to portal...",
-                        "Loading project plan...",
-                      ].map((text, i) => (
-                        <div
-                          key={i}
-                          className="flex items-center gap-3 text-sm"
-                          style={{
-                            color: i + 1 < genStep ? "#15803d" : i + 1 === genStep ? "var(--blue)" : "#cbd5e0",
-                            fontWeight: i + 1 === genStep ? 500 : 400,
-                          }}
-                        >
-                          <span className="w-5 text-center">{i + 1 < genStep ? "✅" : i + 1 === genStep ? "⏳" : "○"}</span>
-                          {text}
-                        </div>
-                      ))}
+                        "Reading questionnaire answers",
+                        "Analyzing responses with Claude",
+                        "Saving to portal",
+                        "Loading project plan",
+                      ].map((text, i) => {
+                        const done = i + 1 < genStep;
+                        const active = i + 1 === genStep;
+                        return (
+                          <div key={i} className="flex items-center gap-3 text-sm">
+                            <div
+                              className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-all"
+                              style={{
+                                background: done ? "#f0fdf4" : active ? "var(--teal-pale)" : "#f3f4f6",
+                                border: done ? "2px solid #86efac" : active ? "2px solid var(--teal)" : "2px solid #e5e7eb",
+                              }}
+                            >
+                              {done
+                                ? <CheckCircleIcon size={14} color="#15803d" />
+                                : active
+                                ? <div className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" style={{ background: "var(--teal)" }} />
+                                : <div className="w-2 h-2 rounded-full bg-gray-300" />
+                              }
+                            </div>
+                            <span style={{
+                              color: done ? "#15803d" : active ? "var(--blue)" : "#9ca3af",
+                              fontWeight: active ? 500 : 400,
+                            }}>
+                              {text}
+                            </span>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
@@ -547,36 +786,53 @@ export default function OnboardingApp() {
             </div>
           )}
 
-          {/* PROJECT PLAN */}
+          {/* ── PROJECT PLAN ── */}
           {view === "plan" && submission && (
             <div className="flex flex-col flex-1 min-h-0">
               {/* Plan header */}
-              <div className="px-8 py-5 bg-white border-b shadow-sm" style={{ borderColor: "#e2e8f0" }}>
-                <div className="flex items-center justify-between">
+              <div
+                className="px-8 py-5 bg-white border-b"
+                style={{ borderColor: "var(--border)", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}
+              >
+                <div className="flex items-start justify-between mb-5">
                   <div>
-                    <div className="text-[10px] font-bold tracking-widest uppercase mb-1" style={{ color: "var(--teal)" }}>Project Plan</div>
-                    <h2 className="text-xl font-bold" style={{ color: "var(--blue)" }}>{submission.client_name}</h2>
+                    <div
+                      className="text-[10px] font-bold tracking-widest uppercase mb-1"
+                      style={{ color: "var(--teal)" }}
+                    >
+                      Project Plan
+                    </div>
+                    <h2 className="text-xl font-bold" style={{ color: "var(--blue)" }}>
+                      {submission.client_name}
+                    </h2>
                     <p className="text-xs text-gray-400 mt-0.5">
-                      Generated {new Date(submission.created_at).toLocaleDateString()} · {Object.values(submission.plan_data).flat().length} action items
+                      Generated {new Date(submission.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                      {" · "}{Object.values(submission.plan_data).flat().length} action items
                     </p>
                   </div>
+
                   <div className="flex items-center gap-4">
-                    {/* Overall progress */}
+                    {/* Progress */}
                     <div className="text-right">
-                      <div className="text-xs text-gray-400 mb-1">Overall Progress</div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-32 h-2 bg-gray-100 rounded-full overflow-hidden">
+                      <div className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 mb-1.5">
+                        Overall Progress
+                      </div>
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-36 h-2 bg-gray-100 rounded-full overflow-hidden">
                           <div
-                            className="h-full rounded-full transition-all calibrate-gradient"
+                            className="h-full rounded-full transition-all duration-500 calibrate-gradient"
                             style={{ width: `${overallProgress()}%` }}
                           />
                         </div>
-                        <span className="text-sm font-bold" style={{ color: "var(--blue)" }}>{overallProgress()}%</span>
+                        <span className="text-sm font-bold tabular-nums" style={{ color: "var(--blue)" }}>
+                          {overallProgress()}%
+                        </span>
                       </div>
                     </div>
+
                     <button
                       onClick={resetAll}
-                      className="px-4 py-2 rounded-lg text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all border border-gray-200"
                     >
                       + New Client
                     </button>
@@ -584,7 +840,7 @@ export default function OnboardingApp() {
                 </div>
 
                 {/* Service tabs */}
-                <div className="flex gap-1 mt-5 overflow-x-auto pb-1">
+                <div className="flex gap-1.5 overflow-x-auto pb-0.5">
                   {planTabs.map((tab) => {
                     const counts = statusCounts(tab);
                     const done = counts["Complete"] || 0;
@@ -594,20 +850,20 @@ export default function OnboardingApp() {
                       <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
-                        className="shrink-0 px-4 py-2.5 rounded-lg text-sm font-medium transition-all"
+                        className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all"
                         style={{
                           background: active ? "var(--blue)" : "rgba(26,75,132,0.05)",
-                          color: active ? "white" : "#4a5568",
-                          border: active ? "2px solid var(--blue)" : "2px solid transparent",
+                          color: active ? "white" : "var(--text-mid)",
+                          border: active ? "1.5px solid var(--blue)" : "1.5px solid transparent",
                         }}
                       >
                         {tab}
                         {total > 0 && (
                           <span
-                            className="ml-2 text-[10px] px-1.5 py-0.5 rounded-full"
+                            className="text-[10px] px-1.5 py-0.5 rounded-full tabular-nums font-semibold"
                             style={{
-                              background: active ? "rgba(255,255,255,0.2)" : "#e2e8f0",
-                              color: active ? "white" : "#718096",
+                              background: active ? "rgba(255,255,255,0.2)" : "var(--border)",
+                              color: active ? "white" : "var(--text-light)",
                             }}
                           >
                             {done}/{total}
@@ -619,7 +875,7 @@ export default function OnboardingApp() {
                 </div>
               </div>
 
-              {/* Plan table */}
+              {/* Plan rows */}
               <div className="flex-1 overflow-auto px-8 py-6">
                 <PlanTable
                   rows={submission.plan_data[activeTab] || []}
@@ -631,31 +887,45 @@ export default function OnboardingApp() {
             </div>
           )}
 
-          {/* CLIENTS LIST */}
+          {/* ── CLIENTS LIST ── */}
           {view === "clients" && (
             <div className="flex-1 px-10 py-10">
               <div className="flex items-center justify-between mb-8">
                 <div>
-                  <h2 className="text-2xl font-bold" style={{ color: "var(--blue)" }}>All Client Onboardings</h2>
-                  <p className="text-sm text-gray-500 mt-1">Click a client to view their project plan</p>
+                  <h2 className="text-2xl font-bold" style={{ color: "var(--blue)" }}>
+                    All Client Onboardings
+                  </h2>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Click a client to view their project plan
+                  </p>
                 </div>
                 <button
                   onClick={() => goTo("welcome")}
-                  className="px-5 py-2.5 rounded-xl text-white font-medium text-sm shadow-sm hover:opacity-90 transition-all calibrate-gradient"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-medium text-sm shadow-sm hover:opacity-90 transition-all calibrate-gradient"
                 >
                   + New Client
                 </button>
               </div>
 
               {loadingClients ? (
-                <div className="flex items-center gap-3 text-gray-400 text-sm">
-                  <div className="w-5 h-5 border-2 border-gray-100 rounded-full animate-spin" style={{ borderTopColor: "var(--teal)" }} />
-                  Loading clients...
+                <div className="flex items-center gap-3 text-gray-400 text-sm py-10">
+                  <div
+                    className="w-5 h-5 rounded-full border-2 animate-spin"
+                    style={{ borderColor: "var(--teal-pale)", borderTopColor: "var(--teal)" }}
+                  />
+                  Loading clients…
                 </div>
               ) : clients.length === 0 ? (
-                <div className="text-center py-20 text-gray-400">
-                  <div className="text-4xl mb-4">📋</div>
-                  <p>No clients onboarded yet.</p>
+                <div className="flex flex-col items-center justify-center py-24 text-gray-400">
+                  <UsersIcon size={40} color="#d1d5db" />
+                  <p className="mt-4 text-sm">No clients onboarded yet.</p>
+                  <button
+                    onClick={() => goTo("welcome")}
+                    className="mt-4 text-sm font-medium hover:opacity-80 transition-all"
+                    style={{ color: "var(--blue)" }}
+                  >
+                    Start your first client →
+                  </button>
                 </div>
               ) : (
                 <div className="grid grid-cols-3 gap-4">
@@ -671,21 +941,32 @@ export default function OnboardingApp() {
                           goTo("plan");
                         }
                       }}
-                      className="bg-white rounded-xl border p-5 text-left hover:shadow-md transition-all cursor-pointer"
-                      style={{ borderColor: "#e2e8f0" }}
+                      className="bg-white rounded-xl border p-5 text-left hover:shadow-md transition-all group"
+                      style={{ borderColor: "var(--border)" }}
                     >
-                      <div className="font-semibold text-sm mb-1" style={{ color: "var(--blue)" }}>{c.client_name}</div>
-                      <div className="text-xs text-gray-400">{new Date(c.created_at).toLocaleDateString()}</div>
-                      <div className="flex flex-wrap gap-1 mt-3">
+                      <div
+                        className="font-semibold text-sm mb-0.5 group-hover:underline"
+                        style={{ color: "var(--blue)" }}
+                      >
+                        {c.client_name}
+                      </div>
+                      <div className="text-xs text-gray-400 mb-3">
+                        {new Date(c.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
                         {(c.selected_services || []).slice(0, 3).map((id: string) => (
                           <span
                             key={id}
-                            className="text-[10px] px-2 py-0.5 rounded-full"
+                            className="text-[10px] px-2 py-0.5 rounded-full font-medium"
                             style={{ background: "var(--teal-pale)", color: "var(--blue)" }}
-                          >{SERVICE_TAB_NAMES[id] || id}</span>
+                          >
+                            {SERVICE_TAB_NAMES[id] || id}
+                          </span>
                         ))}
                         {(c.selected_services || []).length > 3 && (
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-400">+{c.selected_services.length - 3} more</span>
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">
+                            +{c.selected_services.length - 3} more
+                          </span>
                         )}
                       </div>
                     </button>
@@ -701,7 +982,7 @@ export default function OnboardingApp() {
   );
 }
 
-// ── Plan Table ──────────────────────────────────────────────
+// ── Plan Table ─────────────────────────────────────────────
 
 function PlanTable({
   rows, saving, onUpdate,
@@ -715,14 +996,15 @@ function PlanTable({
 
   if (!rows.length) {
     return (
-      <div className="flex items-center justify-center py-20 text-gray-400 text-sm">
-        No tasks in this section.
+      <div className="flex flex-col items-center justify-center py-20 text-gray-400 text-sm gap-3">
+        <ChartIcon size={32} color="#d1d5db" />
+        <p>No tasks in this section.</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 max-w-5xl">
       {rows.map((row) => {
         const isNewSection = row.service_line !== lastSvcLine;
         if (isNewSection) lastSvcLine = row.service_line;
@@ -731,21 +1013,29 @@ function PlanTable({
         return (
           <div key={row.id}>
             {isNewSection && (
-              <div
-                className="text-[10px] font-bold tracking-widest uppercase mt-6 mb-2 pb-1.5 border-b-2"
-                style={{ color: "var(--blue)", borderColor: "var(--teal)" }}
-              >
-                {row.service_line}
+              <div className="flex items-center gap-3 mt-7 mb-3">
+                <div className="h-px flex-1" style={{ background: "var(--border)" }} />
+                <span
+                  className="text-[10px] font-bold tracking-widest uppercase px-3 whitespace-nowrap"
+                  style={{ color: "var(--blue)" }}
+                >
+                  {row.service_line}
+                </span>
+                <div className="h-px flex-1" style={{ background: "var(--border)" }} />
               </div>
             )}
-            <div className="bg-white rounded-xl border p-4 transition-all hover:shadow-sm" style={{ borderColor: "#e2e8f0" }}>
-              <div className="flex items-start gap-4">
-                {/* Status */}
+
+            <div
+              className="bg-white rounded-xl border p-5 transition-all hover:shadow-sm"
+              style={{ borderColor: "var(--border)" }}
+            >
+              <div className="flex items-start gap-5">
+                {/* Status select */}
                 <div className="shrink-0 pt-0.5">
                   <select
                     value={row.status}
                     onChange={(e) => onUpdate(row.id, "status", e.target.value)}
-                    className="text-[11px] font-semibold px-2 py-1 rounded-full border cursor-pointer outline-none"
+                    className="text-[11px] font-semibold px-2.5 py-1.5 rounded-full border cursor-pointer outline-none appearance-none"
                     style={{ background: sc.bg, color: sc.text, borderColor: sc.border }}
                   >
                     {["Not Started", "In Progress", "Complete", "Blocked"].map((s) => (
@@ -754,54 +1044,90 @@ function PlanTable({
                   </select>
                 </div>
 
-                {/* Main content */}
+                {/* Content */}
                 <div className="flex-1 min-w-0">
-                  <div className="font-semibold text-sm mb-1" style={{ color: "var(--blue)" }}>{row.task}</div>
+                  <p className="font-semibold text-sm mb-3" style={{ color: "var(--blue)" }}>
+                    {row.task}
+                  </p>
 
-                  <div className="grid grid-cols-2 gap-3 mt-2">
+                  <div className="grid grid-cols-2 gap-4 mb-3">
                     <div>
-                      <div className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1">Current State</div>
-                      <p className="text-xs text-gray-600 leading-relaxed">{row.current_state}</p>
+                      <div
+                        className="text-[9px] font-bold uppercase tracking-widest mb-1"
+                        style={{ color: "var(--text-light)" }}
+                      >
+                        Current State
+                      </div>
+                      <p className="text-xs leading-relaxed" style={{ color: "var(--text-mid)" }}>
+                        {row.current_state}
+                      </p>
                     </div>
                     <div>
-                      <div className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1">Goal / Action Item</div>
-                      <p className="text-xs text-gray-600 leading-relaxed">{row.goal}</p>
+                      <div
+                        className="text-[9px] font-bold uppercase tracking-widest mb-1"
+                        style={{ color: "var(--text-light)" }}
+                      >
+                        Goal / Action Item
+                      </div>
+                      <p className="text-xs leading-relaxed" style={{ color: "var(--text-mid)" }}>
+                        {row.goal}
+                      </p>
                     </div>
                   </div>
 
                   {row.notes && (
                     <div
-                      className="mt-2.5 px-3 py-2 rounded-lg text-xs"
-                      style={{ background: "var(--teal-pale)", color: "var(--blue)", borderLeft: "3px solid var(--teal)" }}
+                      className="flex gap-2 items-start px-3 py-2.5 rounded-lg text-xs mb-3"
+                      style={{
+                        background: "var(--teal-pale)",
+                        color: "var(--blue)",
+                        borderLeft: "3px solid var(--teal)",
+                      }}
                     >
-                      💡 {row.notes}
+                      <InfoIcon size={13} color="var(--teal)" className="shrink-0 mt-0.5" />
+                      {row.notes}
                     </div>
                   )}
 
-                  <div className="flex items-center gap-4 mt-3">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] text-gray-400 font-medium">Owner:</span>
+                  <div className="flex items-center gap-5 pt-1">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className="text-[10px] font-semibold uppercase tracking-widest"
+                        style={{ color: "var(--text-light)" }}
+                      >
+                        Owner
+                      </span>
                       <input
                         type="text"
                         value={row.owner || ""}
                         onChange={(e) => onUpdate(row.id, "owner", e.target.value)}
                         placeholder="Assign..."
-                        className="text-xs px-2 py-1 rounded border bg-gray-50 outline-none focus:bg-white w-32 transition-all"
-                        style={{ borderColor: "#e2e8f0" }}
+                        className="text-xs px-2.5 py-1 rounded-lg border bg-gray-50 outline-none focus:bg-white w-32 transition-all"
+                        style={{ borderColor: "var(--border)" }}
                       />
                     </div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] text-gray-400 font-medium">Target Date:</span>
+                    <div className="flex items-center gap-2">
+                      <span
+                        className="text-[10px] font-semibold uppercase tracking-widest"
+                        style={{ color: "var(--text-light)" }}
+                      >
+                        Target Date
+                      </span>
                       <input
                         type="date"
                         value={row.target_date || ""}
                         onChange={(e) => onUpdate(row.id, "target_date", e.target.value)}
-                        className="text-xs px-2 py-1 rounded border bg-gray-50 outline-none focus:bg-white transition-all"
-                        style={{ borderColor: "#e2e8f0" }}
+                        className="text-xs px-2.5 py-1 rounded-lg border bg-gray-50 outline-none focus:bg-white transition-all"
+                        style={{ borderColor: "var(--border)" }}
                       />
                     </div>
                     {saving[row.id] && (
-                      <span className="text-[10px] animate-pulse" style={{ color: "var(--teal)" }}>Saving…</span>
+                      <span
+                        className="text-[10px] animate-pulse"
+                        style={{ color: "var(--teal)" }}
+                      >
+                        Saving…
+                      </span>
                     )}
                   </div>
                 </div>
@@ -816,37 +1142,112 @@ function PlanTable({
 
 // ── Sub-components ────────────────────────────────────────
 
-function SidebarLabel({ children }: { children: React.ReactNode }) {
+function PageHeader({
+  eyebrow, title, subtitle, icon, progress,
+}: {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  icon?: React.ReactNode;
+  progress?: { current: number; total: number };
+}) {
   return (
-    <div className="text-[10px] font-bold tracking-widest uppercase px-5 pt-4 pb-1.5" style={{ color: "rgba(255,255,255,0.35)" }}>
+    <div
+      className="px-10 py-6 bg-white border-b sticky top-0 z-10"
+      style={{ borderColor: "var(--border)", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
+    >
+      <div className="flex items-start justify-between">
+        <div className="flex items-start gap-3">
+          {icon && (
+            <div
+              className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 mt-0.5"
+              style={{ background: "var(--teal-pale)" }}
+            >
+              {icon}
+            </div>
+          )}
+          <div>
+            <div
+              className="text-[10px] font-bold tracking-widest uppercase mb-1"
+              style={{ color: "var(--teal)" }}
+            >
+              {eyebrow}
+            </div>
+            <h2 className="text-xl font-bold leading-tight" style={{ color: "var(--blue)" }}>
+              {title}
+            </h2>
+            <p className="text-sm text-gray-500 mt-1">{subtitle}</p>
+          </div>
+        </div>
+        {progress && (
+          <div className="text-right shrink-0 ml-8">
+            <div
+              className="text-[10px] font-bold uppercase tracking-widest mb-2"
+              style={{ color: "var(--text-light)" }}
+            >
+              {progress.current} of {progress.total}
+            </div>
+            <div className="w-28 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all calibrate-gradient"
+                style={{ width: `${Math.round((progress.current / progress.total) * 100)}%` }}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function SidebarSection({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="mb-1">
+      <div
+        className="text-[9px] font-bold tracking-widest uppercase px-5 pt-4 pb-2"
+        style={{ color: "rgba(255,255,255,0.3)" }}
+      >
+        {label}
+      </div>
       {children}
     </div>
   );
 }
 
-function SidebarItem({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+function SidebarItem({
+  active, onClick, icon, badge, children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon?: React.ReactNode;
+  badge?: React.ReactNode;
+  children: React.ReactNode;
+}) {
   return (
     <button
       onClick={onClick}
-      className="flex w-full items-center gap-2.5 px-5 py-2.5 cursor-pointer transition-all text-sm text-left"
+      className="flex w-full items-center gap-2.5 px-4 py-2.5 text-sm text-left transition-all"
       style={{
-        color: active ? "white" : "rgba(255,255,255,0.65)",
+        color: active ? "white" : "rgba(255,255,255,0.6)",
         background: active ? "rgba(59,180,193,0.15)" : "transparent",
         borderLeft: `3px solid ${active ? "var(--teal)" : "transparent"}`,
         fontWeight: active ? 500 : 400,
       }}
     >
-      <div
-        className="w-1.5 h-1.5 rounded-full shrink-0 transition-all"
-        style={{ background: active ? "var(--teal)" : "rgba(255,255,255,0.2)" }}
-      />
-      {children}
+      <span
+        className="shrink-0 transition-all"
+        style={{ color: active ? "var(--teal-light)" : "rgba(255,255,255,0.35)" }}
+      >
+        {icon}
+      </span>
+      <span className="flex-1 min-w-0 truncate">{children}</span>
+      {badge}
     </button>
   );
 }
 
 function FooterNav({
-  onBack, onNext, nextLabel = "Next →", progress, progressLabel,
+  onBack, onNext, nextLabel = "Next", progress, progressLabel,
 }: {
   onBack: () => void;
   onNext: () => void;
@@ -857,14 +1258,16 @@ function FooterNav({
   return (
     <div
       className="flex items-center gap-4 px-10 py-4 bg-white border-t shrink-0"
-      style={{ borderColor: "#e2e8f0", boxShadow: "0 -2px 8px rgba(0,0,0,0.04)" }}
+      style={{ borderColor: "var(--border)", boxShadow: "0 -2px 8px rgba(0,0,0,0.04)" }}
     >
       <button
         onClick={onBack}
-        className="px-5 py-2.5 rounded-lg text-sm font-medium bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200 transition-all"
+        className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-lg text-sm font-medium bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200 transition-all"
       >
-        ← Back
+        <ArrowLeftIcon size={14} color="currentColor" />
+        Back
       </button>
+
       {progress !== undefined ? (
         <>
           <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
@@ -873,17 +1276,23 @@ function FooterNav({
               style={{ width: `${progress}%` }}
             />
           </div>
-          <span className="text-xs text-gray-400 whitespace-nowrap">{progressLabel}</span>
+          <span className="text-xs text-gray-400 whitespace-nowrap tabular-nums">
+            {progressLabel}
+          </span>
         </>
       ) : (
         <div className="flex-1" />
       )}
+
       <button
         onClick={onNext}
-        className="px-5 py-2.5 rounded-lg text-sm font-medium text-white shadow-sm hover:opacity-90 transition-all calibrate-gradient"
+        className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-lg text-sm font-medium text-white shadow-sm hover:opacity-90 transition-all calibrate-gradient"
       >
         {nextLabel}
+        <ArrowRightIcon size={14} color="white" />
       </button>
     </div>
   );
 }
+
+

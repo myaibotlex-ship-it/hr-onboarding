@@ -6,7 +6,7 @@ export interface Question {
 
 export interface Service {
   id: string;
-  icon: string;
+  iconId: string;
   name: string;
   desc: string;
 }
@@ -33,13 +33,13 @@ export interface Submission {
 }
 
 export const SERVICES: Service[] = [
-  { id: "payroll",  icon: "💰", name: "Payroll Administration",       desc: "Payroll processing, tax compliance, GL" },
-  { id: "hrcomp",  icon: "⚖️", name: "HR Compliance & Risk Mgmt.",   desc: "Handbook, I-9, leave, OSHA, M&A" },
-  { id: "talent",  icon: "🌱", name: "Talent Management",            desc: "Performance, training, succession" },
-  { id: "rewards", icon: "🎁", name: "Total Rewards",                 desc: "Compensation & benefits" },
-  { id: "acq",     icon: "🔍", name: "Talent Acquisition",           desc: "Recruiting & onboarding" },
-  { id: "engage",  icon: "💬", name: "Employee Engagement",          desc: "Culture, recognition, communication" },
-  { id: "peo",     icon: "🔄", name: "PEO Transition",               desc: "Transitioning off a PEO" },
+  { id: "payroll",  iconId: "payroll",     name: "Payroll Administration",       desc: "Payroll processing, tax compliance, GL" },
+  { id: "hrcomp",  iconId: "compliance",  name: "HR Compliance & Risk Mgmt.",   desc: "Handbook, I-9, leave, OSHA, M&A" },
+  { id: "talent",  iconId: "talent",      name: "Talent Management",            desc: "Performance, training, succession" },
+  { id: "rewards", iconId: "benefits",    name: "Total Rewards",                 desc: "Compensation & benefits" },
+  { id: "acq",     iconId: "acquisition", name: "Talent Acquisition",           desc: "Recruiting & onboarding" },
+  { id: "engage",  iconId: "engage",      name: "Employee Engagement",          desc: "Culture, recognition, communication" },
+  { id: "peo",     iconId: "peo",         name: "PEO Transition",               desc: "Transitioning off a PEO" },
 ];
 
 export const SERVICE_TAB_NAMES: Record<string, string> = {
