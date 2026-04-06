@@ -1,13 +1,18 @@
 @import "tailwindcss";
 
 :root {
-  --navy: #0A2342;
-  --navy-mid: #0d2d56;
-  --navy-light: #1a3a6b;
-  --gold: #C9A84C;
-  --gold-light: #e8d4a8;
-  --cream: #f8f6f1;
+  --blue: #1A4B84;
+  --blue-mid: #1d5499;
+  --blue-light: #2563b0;
+  --teal: #3BB4C1;
+  --teal-light: #6ecbd5;
+  --teal-pale: #e8f7f9;
+  --gray-bg: #f5f7fa;
   --white: #ffffff;
+  --text-dark: #1a2a3a;
+  --text-mid: #4a5568;
+  --text-light: #718096;
+  --border: #e2e8f0;
 }
 
 * {
@@ -16,8 +21,19 @@
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: var(--cream);
-  color: #1e2a3a;
+  background: var(--gray-bg);
+  color: var(--text-dark);
+}
+
+.calibrate-gradient {
+  background: linear-gradient(135deg, #1A4B84 0%, #3BB4C1 100%);
+}
+
+.calibrate-text-gradient {
+  background: linear-gradient(135deg, #1A4B84 0%, #3BB4C1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .scrollbar-hide::-webkit-scrollbar {

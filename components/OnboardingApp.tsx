@@ -222,25 +222,25 @@ export default function OnboardingApp() {
   }, [submission]);
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden" style={{ background: "var(--cream)" }}>
+    <div className="flex flex-col h-screen overflow-hidden" style={{ background: "var(--gray-bg)" }}>
       {/* ── Header ── */}
       <header
         className="flex items-center justify-between px-8 shrink-0 shadow-md z-20"
-        style={{ background: "var(--navy)", height: 64 }}
+        style={{ background: "var(--blue)", height: 64 }}
       >
         <button
           onClick={() => goTo("welcome")}
-          className="text-white font-bold text-lg tracking-wide hover:opacity-80 transition-opacity"
+          className="text-white font-bold text-lg tracking-wide hover:opacity-80 transition-opacity flex items-center gap-3"
         >
-          Calibrate<span style={{ color: "var(--gold)" }}>HCM</span>
-          <span className="text-white/40 font-normal text-sm ml-3">HR Services Onboarding</span>
+          <span>Calibrate<span style={{ color: "var(--teal)" }}>HCM</span></span>
+          <span className="text-white/40 font-normal text-sm">HR Services Onboarding</span>
         </button>
         <div className="flex items-center gap-3">
           {submission && (
             <button
               onClick={() => goTo("plan")}
               className="text-xs px-3 py-1.5 rounded-lg font-medium transition-all hover:opacity-80"
-              style={{ background: "rgba(201,168,76,0.15)", color: "var(--gold-light)", border: "1px solid rgba(201,168,76,0.3)" }}
+              style={{ background: "rgba(59,180,193,0.2)", color: "var(--teal-light)", border: "1px solid rgba(59,180,193,0.35)" }}
             >
               View Active Plan
             </button>
@@ -248,13 +248,13 @@ export default function OnboardingApp() {
           <button
             onClick={() => { goTo("clients"); loadClients(); }}
             className="text-xs px-3 py-1.5 rounded-lg font-medium transition-all hover:opacity-80"
-            style={{ background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.15)" }}
+            style={{ background: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.75)", border: "1px solid rgba(255,255,255,0.2)" }}
           >
             All Clients
           </button>
           <div
             className="text-xs font-semibold tracking-widest uppercase px-3 py-1 rounded-full border"
-            style={{ color: "var(--gold-light)", borderColor: "rgba(201,168,76,0.35)", background: "rgba(201,168,76,0.1)" }}
+            style={{ color: "var(--teal-light)", borderColor: "rgba(59,180,193,0.4)", background: "rgba(59,180,193,0.12)" }}
           >
             Client Kickoff Tool
           </div>
@@ -266,7 +266,7 @@ export default function OnboardingApp() {
         {view !== "plan" && view !== "clients" && (
           <nav
             className="w-64 shrink-0 overflow-y-auto py-6 flex flex-col gap-0.5"
-            style={{ background: "var(--navy-mid)" }}
+            style={{ background: "#163d6e" }}
           >
             <SidebarLabel>Navigation</SidebarLabel>
             <SidebarItem active={view === "welcome"} onClick={() => goTo("welcome")}>Getting Started</SidebarItem>
@@ -281,9 +281,9 @@ export default function OnboardingApp() {
                 <SidebarItem key={sv} active={view === sv} onClick={() => goTo(sv as AppView)}>
                   {SECTION_META[sk]?.title ?? sk}
                   {sk === "peo" ? (
-                    <span className="ml-auto text-[9px] font-semibold tracking-wide uppercase px-1.5 py-0.5 rounded-full border" style={{ color: "rgba(201,168,76,0.7)", borderColor: "rgba(201,168,76,0.3)" }}>Optional</span>
+                    <span className="ml-auto text-[9px] font-semibold tracking-wide uppercase px-1.5 py-0.5 rounded-full border" style={{ color: "rgba(59,180,193,0.8)", borderColor: "rgba(59,180,193,0.3)" }}>Optional</span>
                   ) : cnt > 0 ? (
-                    <span className="ml-auto text-[10px]" style={{ color: view === sv ? "rgba(201,168,76,0.7)" : "rgba(255,255,255,0.3)" }}>{cnt}/{tot}</span>
+                    <span className="ml-auto text-[10px]" style={{ color: view === sv ? "var(--teal-light)" : "rgba(255,255,255,0.35)" }}>{cnt}/{tot}</span>
                   ) : null}
                 </SidebarItem>
               );
@@ -300,10 +300,13 @@ export default function OnboardingApp() {
           {/* WELCOME */}
           {view === "welcome" && (
             <div className="flex flex-col items-center justify-center flex-1 px-10 py-16 text-center">
-              <div className="w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-7 shadow-lg text-4xl" style={{ background: `linear-gradient(135deg, var(--navy-light), var(--navy))` }}>
+              {/* Hero gradient bar */}
+              <div className="w-full max-w-2xl h-1 rounded-full mb-10 calibrate-gradient" />
+
+              <div className="w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-7 shadow-lg text-4xl calibrate-gradient">
                 📋
               </div>
-              <h1 className="text-3xl font-bold mb-3" style={{ color: "var(--navy)" }}>
+              <h1 className="text-3xl font-bold mb-3 calibrate-text-gradient">
                 Client Onboarding Kickoff Tool
               </h1>
               <p className="text-gray-500 max-w-lg mb-10 text-sm leading-relaxed">
@@ -315,14 +318,17 @@ export default function OnboardingApp() {
                   { n: 2, title: "Complete Questionnaire", desc: "Answer questions across each relevant service area." },
                   { n: 3, title: "Live Project Plan", desc: "Claude builds an interactive plan. Update status, owners, and dates in real time." },
                 ].map(({ n, title, desc }) => (
-                  <div key={n} className="bg-white rounded-xl border p-5 text-left shadow-sm" style={{ borderColor: "#e5e7eb" }}>
-                    <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white mb-3" style={{ background: "var(--navy)" }}>{n}</div>
-                    <h4 className="font-semibold text-sm mb-1" style={{ color: "var(--navy)" }}>{title}</h4>
+                  <div key={n} className="bg-white rounded-xl border p-5 text-left shadow-sm" style={{ borderColor: "#e2e8f0" }}>
+                    <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white mb-3 calibrate-gradient">{n}</div>
+                    <h4 className="font-semibold text-sm mb-1" style={{ color: "var(--blue)" }}>{title}</h4>
                     <p className="text-xs text-gray-500">{desc}</p>
                   </div>
                 ))}
               </div>
-              <button onClick={() => goTo("services")} className="px-9 py-3.5 rounded-xl text-white font-medium shadow-md hover:opacity-90 transition-all" style={{ background: "var(--navy)" }}>
+              <button
+                onClick={() => goTo("services")}
+                className="px-9 py-3.5 rounded-xl text-white font-medium shadow-md hover:opacity-90 transition-all calibrate-gradient"
+              >
                 Start New Client →
               </button>
             </div>
@@ -332,7 +338,7 @@ export default function OnboardingApp() {
           {view === "services" && (
             <div className="flex flex-col flex-1">
               <div className="flex-1 px-10 py-10">
-                <h2 className="text-2xl font-bold mb-2" style={{ color: "var(--navy)" }}>Which services is this client enrolling in?</h2>
+                <h2 className="text-2xl font-bold mb-2" style={{ color: "var(--blue)" }}>Which services is this client enrolling in?</h2>
                 <p className="text-gray-500 text-sm mb-8">Select all that apply. Only relevant questionnaire sections and project plan tabs will be generated.</p>
                 <div className="grid grid-cols-3 gap-4">
                   {SERVICES.map((svc) => {
@@ -349,13 +355,22 @@ export default function OnboardingApp() {
                           });
                         }}
                         className="relative bg-white rounded-xl border-2 p-5 text-left cursor-pointer transition-all hover:shadow-md"
-                        style={{ borderColor: sel ? "var(--navy)" : "#e5e7eb", background: sel ? "rgba(10,35,66,0.03)" : "white" }}
+                        style={{
+                          borderColor: sel ? "var(--blue)" : "#e2e8f0",
+                          background: sel ? "rgba(26,75,132,0.04)" : "white",
+                        }}
                       >
-                        <div className="absolute top-3.5 right-3.5 w-5 h-5 rounded-full flex items-center justify-center text-xs text-white transition-all" style={{ background: sel ? "var(--navy)" : "transparent", border: sel ? "2px solid var(--navy)" : "2px solid #d1d5db" }}>
+                        <div
+                          className="absolute top-3.5 right-3.5 w-5 h-5 rounded-full flex items-center justify-center text-xs text-white transition-all"
+                          style={{
+                            background: sel ? "var(--blue)" : "transparent",
+                            border: sel ? "2px solid var(--blue)" : "2px solid #cbd5e0",
+                          }}
+                        >
                           {sel && "✓"}
                         </div>
                         <div className="text-2xl mb-2">{svc.icon}</div>
-                        <h4 className="font-semibold text-sm mb-1" style={{ color: "var(--navy)" }}>{svc.name}</h4>
+                        <h4 className="font-semibold text-sm mb-1" style={{ color: "var(--blue)" }}>{svc.name}</h4>
                         <p className="text-xs text-gray-500">{svc.desc}</p>
                       </button>
                     );
@@ -378,27 +393,27 @@ export default function OnboardingApp() {
             return (
               <div key={sv} className="flex flex-col flex-1">
                 {sk === "general" && (
-                  <div className="flex items-center gap-4 px-10 py-3 bg-white border-b" style={{ borderColor: "#e5e7eb" }}>
+                  <div className="flex items-center gap-4 px-10 py-3 bg-white border-b" style={{ borderColor: "#e2e8f0" }}>
                     <label className="text-sm font-medium text-gray-500 whitespace-nowrap">Client Name:</label>
                     <input
                       type="text"
                       value={clientName}
                       onChange={(e) => setClientName(e.target.value)}
                       placeholder="e.g. Renew Wellness Brands"
-                      className="max-w-xs px-3 py-2 rounded-lg border text-sm outline-none focus:ring-2 bg-gray-50"
-                      style={{ borderColor: "#d1d5db" }}
+                      className="max-w-xs px-3 py-2 rounded-lg border text-sm outline-none bg-gray-50"
+                      style={{ borderColor: "#e2e8f0" }}
                     />
                   </div>
                 )}
 
-                <div className="px-10 py-7 bg-white border-b shadow-sm sticky top-0 z-10" style={{ borderColor: "#e5e7eb" }}>
-                  <div className="text-[10px] font-bold tracking-widest uppercase mb-1" style={{ color: "var(--gold)" }}>{meta.eyebrow}</div>
-                  <div className="text-xl font-bold" style={{ color: "var(--navy)" }}>{meta.title}</div>
+                <div className="px-10 py-7 bg-white border-b shadow-sm sticky top-0 z-10" style={{ borderColor: "#e2e8f0" }}>
+                  <div className="text-[10px] font-bold tracking-widest uppercase mb-1" style={{ color: "var(--teal)" }}>{meta.eyebrow}</div>
+                  <div className="text-xl font-bold" style={{ color: "var(--blue)" }}>{meta.title}</div>
                   <div className="text-sm text-gray-500 mt-1">{meta.subtitle}</div>
                 </div>
 
                 {isOptional && (
-                  <div className="mx-10 mt-5 rounded-xl border px-5 py-4 flex gap-3 text-sm" style={{ background: "#fffbec", borderColor: "#e8d080", color: "#7a5c00" }}>
+                  <div className="mx-10 mt-5 rounded-xl border px-5 py-4 flex gap-3 text-sm" style={{ background: "var(--teal-pale)", borderColor: "rgba(59,180,193,0.3)", color: "var(--blue)" }}>
                     <span className="text-base mt-0.5">💡</span>
                     <div><strong>Optional section.</strong> If this client is not leaving a PEO, leave all questions blank and the PEO Transition tab will be excluded from the project plan.</div>
                   </div>
@@ -412,17 +427,23 @@ export default function OnboardingApp() {
                     return (
                       <div key={q.key}>
                         {isNewSub && (
-                          <div className="text-[10px] font-bold tracking-widest uppercase mt-7 mb-3.5 pb-1.5 border-b-2" style={{ color: "var(--navy-light)", borderColor: "var(--gold-light)" }}>
+                          <div
+                            className="text-[10px] font-bold tracking-widest uppercase mt-7 mb-3.5 pb-1.5 border-b-2"
+                            style={{ color: "var(--blue)", borderColor: "var(--teal)" }}
+                          >
                             {q.sub}
                           </div>
                         )}
                         <div
                           className="bg-white rounded-xl border mb-2.5 px-5 py-4 transition-all focus-within:shadow-sm"
-                          style={{ borderColor: hasAnswer ? "#86efac" : "#e5e7eb" }}
+                          style={{ borderColor: hasAnswer ? "var(--teal)" : "#e2e8f0" }}
                         >
                           <div className="flex gap-2 items-start mb-2">
-                            <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-gray-100 text-gray-400 shrink-0 mt-0.5">Q</span>
-                            <span className="text-sm font-medium" style={{ color: "#1e2a3a" }}>{q.q}</span>
+                            <span
+                              className="text-[10px] font-semibold px-1.5 py-0.5 rounded shrink-0 mt-0.5"
+                              style={{ background: "var(--teal-pale)", color: "var(--blue)" }}
+                            >Q</span>
+                            <span className="text-sm font-medium" style={{ color: "var(--text-dark)" }}>{q.q}</span>
                           </div>
                           <textarea
                             value={answers[q.key] || ""}
@@ -430,7 +451,7 @@ export default function OnboardingApp() {
                             placeholder="Enter answer here..."
                             rows={3}
                             className="w-full text-sm px-3 py-2.5 rounded-lg border bg-gray-50 outline-none resize-y transition-all focus:bg-white"
-                            style={{ borderColor: "#e5e7eb", minHeight: 72 }}
+                            style={{ borderColor: "#e2e8f0", minHeight: 72 }}
                           />
                         </div>
                       </div>
@@ -450,31 +471,35 @@ export default function OnboardingApp() {
           {/* GENERATE */}
           {view === "generate" && (
             <div className="flex items-center justify-center flex-1 px-10 py-16">
-              <div className="bg-white rounded-2xl border shadow-xl p-12 max-w-xl w-full text-center" style={{ borderColor: "#e5e7eb" }}>
+              <div className="bg-white rounded-2xl border shadow-xl p-12 max-w-xl w-full text-center" style={{ borderColor: "#e2e8f0" }}>
 
                 {!generating && (
                   <>
-                    <h2 className="text-2xl font-bold mb-2" style={{ color: "var(--navy)" }}>Ready to Generate</h2>
+                    <h2 className="text-2xl font-bold mb-2 calibrate-text-gradient">Ready to Generate</h2>
                     <p className="text-gray-500 text-sm mb-8">Claude will interpret your answers and build a fully-structured, interactive project plan inside this portal.</p>
 
                     <div className="flex flex-wrap gap-2 justify-center mb-6">
                       {SERVICES.filter((s) => selectedServices.has(s.id)).map((s) => (
-                        <span key={s.id} className="text-xs font-medium px-3 py-1 rounded-full border" style={{ color: "var(--navy)", background: "rgba(10,35,66,0.05)", borderColor: "rgba(10,35,66,0.15)" }}>
+                        <span
+                          key={s.id}
+                          className="text-xs font-medium px-3 py-1 rounded-full border"
+                          style={{ color: "var(--blue)", background: "var(--teal-pale)", borderColor: "rgba(59,180,193,0.3)" }}
+                        >
                           {s.icon} {s.name}
                         </span>
                       ))}
                     </div>
 
-                    <div className="rounded-xl border text-left p-4 mb-7 text-sm" style={{ background: "#f9fafb", borderColor: "#e5e7eb" }}>
+                    <div className="rounded-xl border text-left p-4 mb-7 text-sm" style={{ background: "#f7fafc", borderColor: "#e2e8f0" }}>
                       {[
                         ["Client", clientName || answers["co_name"] || "Not entered"],
                         ["Services", selectedServices.size.toString()],
                         ["Answers", `${Object.values(answers).filter(v => v?.trim()).length} of ${Object.values(QUESTIONS).flat().length}`],
                         ["PEO Transition", isPeoActive() ? "✓ Will be included" : "Skipped"],
                       ].map(([label, val]) => (
-                        <div key={label} className="flex justify-between items-center py-1.5 border-b last:border-0" style={{ borderColor: "#f0f0f0" }}>
+                        <div key={label} className="flex justify-between items-center py-1.5 border-b last:border-0" style={{ borderColor: "#f0f4f8" }}>
                           <span className="text-gray-500">{label}</span>
-                          <span className="font-semibold" style={{ color: "var(--navy)" }}>{val}</span>
+                          <span className="font-semibold" style={{ color: "var(--blue)" }}>{val}</span>
                         </div>
                       ))}
                     </div>
@@ -485,8 +510,7 @@ export default function OnboardingApp() {
 
                     <button
                       onClick={startGeneration}
-                      className="px-8 py-3.5 rounded-xl text-white font-medium shadow-lg hover:opacity-90 transition-all text-sm"
-                      style={{ background: `linear-gradient(135deg, var(--navy-light), var(--navy))` }}
+                      className="px-8 py-3.5 rounded-xl text-white font-medium shadow-lg hover:opacity-90 transition-all text-sm calibrate-gradient"
                     >
                       ✦ Generate Project Plan
                     </button>
@@ -495,8 +519,8 @@ export default function OnboardingApp() {
 
                 {generating && (
                   <div className="flex flex-col items-center gap-5">
-                    <div className="w-12 h-12 border-4 border-gray-200 rounded-full animate-spin" style={{ borderTopColor: "var(--navy)" }} />
-                    <p className="text-sm font-medium" style={{ color: "var(--navy)" }}>Building your project plan…</p>
+                    <div className="w-12 h-12 border-4 border-gray-100 rounded-full animate-spin" style={{ borderTopColor: "var(--teal)" }} />
+                    <p className="text-sm font-medium" style={{ color: "var(--blue)" }}>Building your project plan…</p>
                     <div className="flex flex-col gap-2.5 text-left min-w-72">
                       {[
                         "Reading questionnaire answers...",
@@ -504,7 +528,14 @@ export default function OnboardingApp() {
                         "Saving to portal...",
                         "Loading project plan...",
                       ].map((text, i) => (
-                        <div key={i} className="flex items-center gap-3 text-sm" style={{ color: i + 1 < genStep ? "#15803d" : i + 1 === genStep ? "var(--navy)" : "#d1d5db", fontWeight: i + 1 === genStep ? 500 : 400 }}>
+                        <div
+                          key={i}
+                          className="flex items-center gap-3 text-sm"
+                          style={{
+                            color: i + 1 < genStep ? "#15803d" : i + 1 === genStep ? "var(--blue)" : "#cbd5e0",
+                            fontWeight: i + 1 === genStep ? 500 : 400,
+                          }}
+                        >
                           <span className="w-5 text-center">{i + 1 < genStep ? "✅" : i + 1 === genStep ? "⏳" : "○"}</span>
                           {text}
                         </div>
@@ -520,11 +551,11 @@ export default function OnboardingApp() {
           {view === "plan" && submission && (
             <div className="flex flex-col flex-1 min-h-0">
               {/* Plan header */}
-              <div className="px-8 py-5 bg-white border-b shadow-sm" style={{ borderColor: "#e5e7eb" }}>
+              <div className="px-8 py-5 bg-white border-b shadow-sm" style={{ borderColor: "#e2e8f0" }}>
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-[10px] font-bold tracking-widest uppercase mb-1" style={{ color: "var(--gold)" }}>Project Plan</div>
-                    <h2 className="text-xl font-bold" style={{ color: "var(--navy)" }}>{submission.client_name}</h2>
+                    <div className="text-[10px] font-bold tracking-widest uppercase mb-1" style={{ color: "var(--teal)" }}>Project Plan</div>
+                    <h2 className="text-xl font-bold" style={{ color: "var(--blue)" }}>{submission.client_name}</h2>
                     <p className="text-xs text-gray-400 mt-0.5">
                       Generated {new Date(submission.created_at).toLocaleDateString()} · {Object.values(submission.plan_data).flat().length} action items
                     </p>
@@ -535,9 +566,12 @@ export default function OnboardingApp() {
                       <div className="text-xs text-gray-400 mb-1">Overall Progress</div>
                       <div className="flex items-center gap-2">
                         <div className="w-32 h-2 bg-gray-100 rounded-full overflow-hidden">
-                          <div className="h-full rounded-full transition-all" style={{ width: `${overallProgress()}%`, background: "linear-gradient(90deg, var(--navy-light), var(--gold))" }} />
+                          <div
+                            className="h-full rounded-full transition-all calibrate-gradient"
+                            style={{ width: `${overallProgress()}%` }}
+                          />
                         </div>
-                        <span className="text-sm font-bold" style={{ color: "var(--navy)" }}>{overallProgress()}%</span>
+                        <span className="text-sm font-bold" style={{ color: "var(--blue)" }}>{overallProgress()}%</span>
                       </div>
                     </div>
                     <button
@@ -562,14 +596,20 @@ export default function OnboardingApp() {
                         onClick={() => setActiveTab(tab)}
                         className="shrink-0 px-4 py-2.5 rounded-lg text-sm font-medium transition-all"
                         style={{
-                          background: active ? "var(--navy)" : "rgba(10,35,66,0.04)",
-                          color: active ? "white" : "#6b7280",
-                          border: active ? "2px solid var(--navy)" : "2px solid transparent",
+                          background: active ? "var(--blue)" : "rgba(26,75,132,0.05)",
+                          color: active ? "white" : "#4a5568",
+                          border: active ? "2px solid var(--blue)" : "2px solid transparent",
                         }}
                       >
                         {tab}
                         {total > 0 && (
-                          <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded-full" style={{ background: active ? "rgba(255,255,255,0.2)" : "#e5e7eb", color: active ? "white" : "#6b7280" }}>
+                          <span
+                            className="ml-2 text-[10px] px-1.5 py-0.5 rounded-full"
+                            style={{
+                              background: active ? "rgba(255,255,255,0.2)" : "#e2e8f0",
+                              color: active ? "white" : "#718096",
+                            }}
+                          >
                             {done}/{total}
                           </span>
                         )}
@@ -596,17 +636,20 @@ export default function OnboardingApp() {
             <div className="flex-1 px-10 py-10">
               <div className="flex items-center justify-between mb-8">
                 <div>
-                  <h2 className="text-2xl font-bold" style={{ color: "var(--navy)" }}>All Client Onboardings</h2>
+                  <h2 className="text-2xl font-bold" style={{ color: "var(--blue)" }}>All Client Onboardings</h2>
                   <p className="text-sm text-gray-500 mt-1">Click a client to view their project plan</p>
                 </div>
-                <button onClick={() => goTo("welcome")} className="px-5 py-2.5 rounded-xl text-white font-medium text-sm shadow-sm hover:opacity-90 transition-all" style={{ background: "var(--navy)" }}>
+                <button
+                  onClick={() => goTo("welcome")}
+                  className="px-5 py-2.5 rounded-xl text-white font-medium text-sm shadow-sm hover:opacity-90 transition-all calibrate-gradient"
+                >
                   + New Client
                 </button>
               </div>
 
               {loadingClients ? (
                 <div className="flex items-center gap-3 text-gray-400 text-sm">
-                  <div className="w-5 h-5 border-2 border-gray-200 rounded-full animate-spin" style={{ borderTopColor: "var(--navy)" }} />
+                  <div className="w-5 h-5 border-2 border-gray-100 rounded-full animate-spin" style={{ borderTopColor: "var(--teal)" }} />
                   Loading clients...
                 </div>
               ) : clients.length === 0 ? (
@@ -620,7 +663,6 @@ export default function OnboardingApp() {
                     <button
                       key={c.id}
                       onClick={async () => {
-                        // Load full submission
                         const res = await fetch(`/api/save-submission/${c.id}`);
                         if (res.ok) {
                           const full = await res.json();
@@ -630,13 +672,17 @@ export default function OnboardingApp() {
                         }
                       }}
                       className="bg-white rounded-xl border p-5 text-left hover:shadow-md transition-all cursor-pointer"
-                      style={{ borderColor: "#e5e7eb" }}
+                      style={{ borderColor: "#e2e8f0" }}
                     >
-                      <div className="font-semibold text-sm mb-1" style={{ color: "var(--navy)" }}>{c.client_name}</div>
+                      <div className="font-semibold text-sm mb-1" style={{ color: "var(--blue)" }}>{c.client_name}</div>
                       <div className="text-xs text-gray-400">{new Date(c.created_at).toLocaleDateString()}</div>
                       <div className="flex flex-wrap gap-1 mt-3">
                         {(c.selected_services || []).slice(0, 3).map((id: string) => (
-                          <span key={id} className="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">{SERVICE_TAB_NAMES[id] || id}</span>
+                          <span
+                            key={id}
+                            className="text-[10px] px-2 py-0.5 rounded-full"
+                            style={{ background: "var(--teal-pale)", color: "var(--blue)" }}
+                          >{SERVICE_TAB_NAMES[id] || id}</span>
                         ))}
                         {(c.selected_services || []).length > 3 && (
                           <span className="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-400">+{c.selected_services.length - 3} more</span>
@@ -685,11 +731,14 @@ function PlanTable({
         return (
           <div key={row.id}>
             {isNewSection && (
-              <div className="text-[10px] font-bold tracking-widest uppercase mt-6 mb-2 pb-1.5 border-b-2" style={{ color: "var(--navy-light)", borderColor: "var(--gold-light)" }}>
+              <div
+                className="text-[10px] font-bold tracking-widest uppercase mt-6 mb-2 pb-1.5 border-b-2"
+                style={{ color: "var(--blue)", borderColor: "var(--teal)" }}
+              >
                 {row.service_line}
               </div>
             )}
-            <div className="bg-white rounded-xl border p-4 transition-all hover:shadow-sm" style={{ borderColor: "#e5e7eb" }}>
+            <div className="bg-white rounded-xl border p-4 transition-all hover:shadow-sm" style={{ borderColor: "#e2e8f0" }}>
               <div className="flex items-start gap-4">
                 {/* Status */}
                 <div className="shrink-0 pt-0.5">
@@ -707,7 +756,7 @@ function PlanTable({
 
                 {/* Main content */}
                 <div className="flex-1 min-w-0">
-                  <div className="font-semibold text-sm mb-1" style={{ color: "var(--navy)" }}>{row.task}</div>
+                  <div className="font-semibold text-sm mb-1" style={{ color: "var(--blue)" }}>{row.task}</div>
 
                   <div className="grid grid-cols-2 gap-3 mt-2">
                     <div>
@@ -721,7 +770,10 @@ function PlanTable({
                   </div>
 
                   {row.notes && (
-                    <div className="mt-2.5 px-3 py-2 rounded-lg text-xs" style={{ background: "#fffbec", color: "#7a5c00", borderLeft: "3px solid #e8d080" }}>
+                    <div
+                      className="mt-2.5 px-3 py-2 rounded-lg text-xs"
+                      style={{ background: "var(--teal-pale)", color: "var(--blue)", borderLeft: "3px solid var(--teal)" }}
+                    >
                       💡 {row.notes}
                     </div>
                   )}
@@ -735,7 +787,7 @@ function PlanTable({
                         onChange={(e) => onUpdate(row.id, "owner", e.target.value)}
                         placeholder="Assign..."
                         className="text-xs px-2 py-1 rounded border bg-gray-50 outline-none focus:bg-white w-32 transition-all"
-                        style={{ borderColor: "#e5e7eb" }}
+                        style={{ borderColor: "#e2e8f0" }}
                       />
                     </div>
                     <div className="flex items-center gap-1.5">
@@ -745,11 +797,11 @@ function PlanTable({
                         value={row.target_date || ""}
                         onChange={(e) => onUpdate(row.id, "target_date", e.target.value)}
                         className="text-xs px-2 py-1 rounded border bg-gray-50 outline-none focus:bg-white transition-all"
-                        style={{ borderColor: "#e5e7eb" }}
+                        style={{ borderColor: "#e2e8f0" }}
                       />
                     </div>
                     {saving[row.id] && (
-                      <span className="text-[10px] text-gray-400 animate-pulse">Saving…</span>
+                      <span className="text-[10px] animate-pulse" style={{ color: "var(--teal)" }}>Saving…</span>
                     )}
                   </div>
                 </div>
@@ -766,7 +818,7 @@ function PlanTable({
 
 function SidebarLabel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="text-[10px] font-bold tracking-widest uppercase px-5 pt-4 pb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>
+    <div className="text-[10px] font-bold tracking-widest uppercase px-5 pt-4 pb-1.5" style={{ color: "rgba(255,255,255,0.35)" }}>
       {children}
     </div>
   );
@@ -779,12 +831,15 @@ function SidebarItem({ active, onClick, children }: { active: boolean; onClick: 
       className="flex w-full items-center gap-2.5 px-5 py-2.5 cursor-pointer transition-all text-sm text-left"
       style={{
         color: active ? "white" : "rgba(255,255,255,0.65)",
-        background: active ? "rgba(201,168,76,0.1)" : "transparent",
-        borderLeft: `3px solid ${active ? "var(--gold)" : "transparent"}`,
+        background: active ? "rgba(59,180,193,0.15)" : "transparent",
+        borderLeft: `3px solid ${active ? "var(--teal)" : "transparent"}`,
         fontWeight: active ? 500 : 400,
       }}
     >
-      <div className="w-1.5 h-1.5 rounded-full shrink-0 transition-all" style={{ background: active ? "var(--gold)" : "rgba(255,255,255,0.2)" }} />
+      <div
+        className="w-1.5 h-1.5 rounded-full shrink-0 transition-all"
+        style={{ background: active ? "var(--teal)" : "rgba(255,255,255,0.2)" }}
+      />
       {children}
     </button>
   );
@@ -800,19 +855,33 @@ function FooterNav({
   progressLabel?: string;
 }) {
   return (
-    <div className="flex items-center gap-4 px-10 py-4 bg-white border-t shrink-0" style={{ borderColor: "#e5e7eb", boxShadow: "0 -2px 8px rgba(0,0,0,0.05)" }}>
-      <button onClick={onBack} className="px-5 py-2.5 rounded-lg text-sm font-medium bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200 transition-all">← Back</button>
+    <div
+      className="flex items-center gap-4 px-10 py-4 bg-white border-t shrink-0"
+      style={{ borderColor: "#e2e8f0", boxShadow: "0 -2px 8px rgba(0,0,0,0.04)" }}
+    >
+      <button
+        onClick={onBack}
+        className="px-5 py-2.5 rounded-lg text-sm font-medium bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200 transition-all"
+      >
+        ← Back
+      </button>
       {progress !== undefined ? (
         <>
-          <div className="flex-1 h-1 bg-gray-100 rounded-full overflow-hidden">
-            <div className="h-full rounded-full transition-all duration-500" style={{ width: `${progress}%`, background: "linear-gradient(90deg, var(--navy-light), var(--gold))" }} />
+          <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+            <div
+              className="h-full rounded-full transition-all duration-500 calibrate-gradient"
+              style={{ width: `${progress}%` }}
+            />
           </div>
           <span className="text-xs text-gray-400 whitespace-nowrap">{progressLabel}</span>
         </>
       ) : (
         <div className="flex-1" />
       )}
-      <button onClick={onNext} className="px-5 py-2.5 rounded-lg text-sm font-medium text-white shadow-sm hover:opacity-90 transition-all" style={{ background: "var(--navy)" }}>
+      <button
+        onClick={onNext}
+        className="px-5 py-2.5 rounded-lg text-sm font-medium text-white shadow-sm hover:opacity-90 transition-all calibrate-gradient"
+      >
         {nextLabel}
       </button>
     </div>
