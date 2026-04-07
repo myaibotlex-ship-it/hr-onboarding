@@ -374,40 +374,12 @@ export default function OnboardingApp() {
           </nav>
         )}
 
-        {/* ── Mobile bottom nav (shown when sidebar is hidden) ── */}
-        {view !== "plan" && view !== "clients" && (
-          <div
-            className="md:hidden fixed bottom-0 left-0 right-0 z-30 flex items-center justify-around bg-white border-t px-2 py-2"
-            style={{ borderColor: "var(--border)", boxShadow: "0 -2px 12px rgba(0,0,0,0.08)" }}
-          >
-            {([
-              { v: "welcome",  icon: <ClipboardIcon size={20} color="currentColor" />, label: "Start" },
-              { v: "services", icon: <UsersIcon size={20} color="currentColor" />,    label: "Services" },
-              { v: "q-general",icon: <SectionIcon sectionKey="general" size={20} color="currentColor" />, label: "Questions" },
-              { v: "generate", icon: <SparkIcon size={20} color="currentColor" />,    label: "Generate" },
-            ] as { v: AppView; icon: React.ReactNode; label: string }[]).map(({ v, icon, label }) => {
-              const isActive = view === v || (v === "q-general" && SECTION_VIEWS.includes(view as string));
-              return (
-                <button
-                  key={v}
-                  onClick={() => goTo(v)}
-                  className="flex flex-col items-center gap-1 px-3 py-1.5 rounded-lg transition-all"
-                  style={{ color: isActive ? "var(--blue)" : "#9ca3af" }}
-                >
-                  {icon}
-                  <span className="text-[10px] font-semibold">{label}</span>
-                </button>
-              );
-            })}
-          </div>
-        )}
-
         {/* ── Main ── */}
-        <main ref={mainRef} className="flex-1 overflow-y-auto flex flex-col pb-16 md:pb-0">
+        <main ref={mainRef} className="flex-1 overflow-y-auto flex flex-col">
 
           {/* ── WELCOME ── */}
           {view === "welcome" && (
-            <div className="flex flex-col items-center justify-center flex-1 px-5 md:px-10 py-10 md:py-16 text-center">
+            <div className="flex flex-col items-center justify-center flex-1 px-10 py-16 text-center">
               <div
                 className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-lg calibrate-gradient"
               >
@@ -485,7 +457,7 @@ export default function OnboardingApp() {
                 subtitle="Choose which HR service suites this client is enrolling in. Only relevant sections will be included in the questionnaire and project plan."
               />
 
-              <div className="flex-1 px-4 md:px-10 py-5 md:py-8">
+              <div className="flex-1 px-10 py-8">
                 <div className="grid grid-cols-3 gap-4 max-w-4xl">
                   {SERVICES.map((svc) => {
                     const sel = selectedServices.has(svc.id);
@@ -560,14 +532,14 @@ export default function OnboardingApp() {
                 {/* Client name bar — only on general */}
                 {sk === "general" && (
                   <div
-                    className="flex flex-col sm:flex-row sm:items-center gap-2 px-4 md:px-10 py-3 bg-white border-b"
+                    className="flex items-center gap-3 px-10 py-3 bg-white border-b"
                     style={{ borderColor: "var(--border)" }}
                   >
                     <label className="text-xs font-semibold text-gray-500 uppercase tracking-widest whitespace-nowrap">
                       Client Name
                     </label>
                     <div
-                      className="hidden sm:block h-4 w-px"
+                      className="h-4 w-px"
                       style={{ background: "var(--border)" }}
                     />
                     <input
@@ -575,7 +547,7 @@ export default function OnboardingApp() {
                       value={clientName}
                       onChange={(e) => setClientName(e.target.value)}
                       placeholder="e.g. Renew Wellness Brands"
-                      className="w-full sm:flex-1 sm:max-w-sm px-3 py-1.5 rounded-lg border text-sm outline-none bg-gray-50 focus:bg-white transition-all"
+                      className="flex-1 max-w-sm px-3 py-1.5 rounded-lg border text-sm outline-none bg-gray-50 focus:bg-white transition-all"
                       style={{ borderColor: "var(--border)" }}
                     />
                   </div>
@@ -591,7 +563,7 @@ export default function OnboardingApp() {
 
                 {isOptional && (
                   <div
-                    className="mx-4 md:mx-10 mt-5 rounded-xl border px-4 py-3 flex gap-3 text-sm"
+                    className="mx-10 mt-6 rounded-xl border px-5 py-4 flex gap-3 text-sm"
                     style={{
                       background: "var(--teal-pale)",
                       borderColor: "rgba(59,180,193,0.3)",
@@ -607,7 +579,7 @@ export default function OnboardingApp() {
                   </div>
                 )}
 
-                <div className="px-4 md:px-10 py-4 md:py-6 flex-1">
+                <div className="px-10 py-6 flex-1">
                   {qs.map((q) => {
                     const isNewSub = q.sub !== lastSub;
                     if (isNewSub) lastSub = q.sub;
@@ -683,9 +655,9 @@ export default function OnboardingApp() {
 
           {/* ── GENERATE ── */}
           {view === "generate" && (
-            <div className="flex items-center justify-center flex-1 px-4 md:px-10 py-8 md:py-16">
+            <div className="flex items-center justify-center flex-1 px-10 py-16">
               <div
-                className="bg-white rounded-2xl border shadow-lg p-5 md:p-10 max-w-lg w-full"
+                className="bg-white rounded-2xl border shadow-lg p-10 max-w-lg w-full"
                 style={{ borderColor: "var(--border)" }}
               >
                 {!generating ? (
@@ -819,10 +791,10 @@ export default function OnboardingApp() {
             <div className="flex flex-col flex-1 min-h-0">
               {/* Plan header */}
               <div
-                className="px-4 md:px-8 py-4 md:py-5 bg-white border-b"
+                className="px-8 py-5 bg-white border-b"
                 style={{ borderColor: "var(--border)", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}
               >
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
+                <div className="flex items-start justify-between mb-5">
                   <div>
                     <div
                       className="text-[10px] font-bold tracking-widest uppercase mb-1"
@@ -839,13 +811,14 @@ export default function OnboardingApp() {
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-3">
-                    <div>
-                      <div className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 mb-1">
-                        Progress
+                  <div className="flex items-center gap-4">
+                    {/* Progress */}
+                    <div className="text-right">
+                      <div className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 mb-1.5">
+                        Overall Progress
                       </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-24 md:w-32 h-2 bg-gray-100 rounded-full overflow-hidden">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-36 h-2 bg-gray-100 rounded-full overflow-hidden">
                           <div
                             className="h-full rounded-full transition-all duration-500 calibrate-gradient"
                             style={{ width: `${overallProgress()}%` }}
@@ -856,11 +829,12 @@ export default function OnboardingApp() {
                         </span>
                       </div>
                     </div>
+
                     <button
                       onClick={resetAll}
-                      className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all border border-gray-200 whitespace-nowrap"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all border border-gray-200"
                     >
-                      + New
+                      + New Client
                     </button>
                   </div>
                 </div>
@@ -902,7 +876,7 @@ export default function OnboardingApp() {
               </div>
 
               {/* Plan rows */}
-              <div className="flex-1 overflow-auto px-3 md:px-8 py-4 md:py-6">
+              <div className="flex-1 overflow-auto px-8 py-6">
                 <PlanTable
                   rows={submission.plan_data[activeTab] || []}
                   tabName={activeTab}
@@ -915,8 +889,8 @@ export default function OnboardingApp() {
 
           {/* ── CLIENTS LIST ── */}
           {view === "clients" && (
-            <div className="flex-1 px-4 md:px-10 py-6 md:py-10">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+            <div className="flex-1 px-10 py-10">
+              <div className="flex items-center justify-between mb-8">
                 <div>
                   <h2 className="text-2xl font-bold" style={{ color: "var(--blue)" }}>
                     All Client Onboardings
@@ -954,7 +928,7 @@ export default function OnboardingApp() {
                   </button>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-3 gap-4">
                   {clients.map((c) => (
                     <button
                       key={c.id}
@@ -1076,7 +1050,7 @@ function PlanTable({
                     {row.task}
                   </p>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                  <div className="grid grid-cols-2 gap-4 mb-3">
                     <div>
                       <div
                         className="text-[9px] font-bold uppercase tracking-widest mb-1"
@@ -1115,7 +1089,7 @@ function PlanTable({
                     </div>
                   )}
 
-                  <div className="flex flex-wrap items-center gap-3 pt-1">
+                  <div className="flex items-center gap-5 pt-1">
                     <div className="flex items-center gap-2">
                       <span
                         className="text-[10px] font-semibold uppercase tracking-widest"
@@ -1179,7 +1153,7 @@ function PageHeader({
 }) {
   return (
     <div
-      className="px-4 md:px-10 py-4 md:py-6 bg-white border-b sticky top-0 z-10"
+      className="px-10 py-6 bg-white border-b sticky top-0 z-10"
       style={{ borderColor: "var(--border)", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
     >
       <div className="flex items-start justify-between">
@@ -1283,7 +1257,7 @@ function FooterNav({
 }) {
   return (
     <div
-      className="flex items-center gap-3 px-4 md:px-10 py-4 bg-white border-t shrink-0"
+      className="flex items-center gap-4 px-10 py-4 bg-white border-t shrink-0"
       style={{ borderColor: "var(--border)", boxShadow: "0 -2px 8px rgba(0,0,0,0.04)" }}
     >
       <button
