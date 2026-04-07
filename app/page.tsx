@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { PASSWORD } from "@/lib/config";
 import OnboardingApp from "@/components/OnboardingApp";
+import Image from "next/image";
 
 export default function Home() {
   const [authed, setAuthed] = useState(false);
@@ -12,20 +13,22 @@ export default function Home() {
   if (authed) return <OnboardingApp />;
 
   return (
-    <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--cream)" }}>
-      <div className="bg-white rounded-2xl shadow-xl p-10 w-full max-w-md text-center">
+    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: "var(--gray-bg)" }}>
+      <div className="bg-white rounded-2xl shadow-xl p-8 md:p-10 w-full max-w-md text-center">
         {/* Logo */}
-        <div className="mb-6">
-          <div
-            className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-md"
-            style={{ background: "var(--navy)" }}
-          >
-            <span className="text-2xl">📋</span>
+        <div className="mb-8">
+          <div className="flex justify-center mb-5">
+            <Image
+              src="/calibrate-logo.png"
+              alt="Calibrate HCM"
+              width={200}
+              height={60}
+              style={{ height: 48, width: "auto" }}
+              priority
+            />
           </div>
-          <h1 className="text-2xl font-bold mb-1" style={{ color: "var(--navy)" }}>
-            Calibrate<span style={{ color: "var(--gold)" }}>HCM</span>
-          </h1>
-          <p className="text-sm text-gray-500">HR Services Client Onboarding</p>
+          <div className="h-px w-16 mx-auto mb-5" style={{ background: "var(--teal)" }} />
+          <p className="text-sm font-medium" style={{ color: "var(--text-mid)" }}>HR Services Client Onboarding</p>
         </div>
 
         <div className="mb-4">
@@ -54,8 +57,7 @@ export default function Home() {
             if (input === PASSWORD) setAuthed(true);
             else setError(true);
           }}
-          className="w-full py-3 rounded-lg text-white font-medium text-sm transition-all hover:opacity-90"
-          style={{ background: "var(--navy)" }}
+          className="w-full py-3 rounded-lg text-white font-medium text-sm transition-all hover:opacity-90 calibrate-gradient"
         >
           Sign In →
         </button>
