@@ -21,6 +21,8 @@ export interface PlanRow {
   target_date: string;
   status: "Not Started" | "In Progress" | "Complete" | "Blocked";
   notes: string;
+  assigned_user_id?: string;
+  due_date?: string;
 }
 
 export interface Submission {
@@ -30,7 +32,34 @@ export interface Submission {
   selected_services: string[];
   plan_data: Record<string, PlanRow[]>;
   created_at: string;
+  paycom_client_code?: string;
+  go_live_date?: string;
+  contract_start_date?: string;
+  hcm_platform?: string;
+  industry?: string;
+  employee_count?: number;
+  implementation_phase?: string;
+  assigned_consultant_id?: string;
+  internal_notes?: string;
 }
+
+export interface TeamUser {
+  id: string;
+  email: string;
+  full_name: string;
+  role: "admin" | "consultant";
+  avatar_color: string;
+}
+
+export const HCM_PLATFORMS = ["Paycom", "Paylocity", "ADP", "UKG", "Ceridian", "Other"] as const;
+export const IMPLEMENTATION_PHASES = ["Discovery", "Active", "Complete", "On Hold"] as const;
+
+export const PHASE_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+  "Discovery": { bg: "#eff6ff", text: "#1d4ed8", border: "#bfdbfe" },
+  "Active":    { bg: "#e8f7f9", text: "#0e7490", border: "#a5f3fc" },
+  "Complete":  { bg: "#f0fdf4", text: "#15803d", border: "#bbf7d0" },
+  "On Hold":   { bg: "#f3f4f6", text: "#6b7280", border: "#d1d5db" },
+};
 
 export const SERVICES: Service[] = [
   { id: "payroll",  iconId: "payroll",     name: "Payroll Administration",       desc: "Payroll processing, tax compliance, GL" },
@@ -169,7 +198,7 @@ export const QUESTIONS: Record<string, Question[]> = {
 };
 
 export const VIEW_ORDER = [
-  "welcome", "services", "q-general", "q-payroll", "q-hrcomp",
+  "welcome", "services", "client-details", "q-general", "q-payroll", "q-hrcomp",
   "q-talent", "q-rewards", "q-acq", "q-peo", "generate", "plan",
 ];
 

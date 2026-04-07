@@ -43,3 +43,77 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* ── Print Styles ── */
+@media print {
+  /* Hide chrome */
+  .print-hide,
+  header,
+  nav,
+  footer {
+    display: none !important;
+  }
+
+  /* Reset layout */
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 11pt;
+  }
+
+  .print-container {
+    overflow: visible !important;
+    height: auto !important;
+    padding: 0 !important;
+  }
+
+  .print-header {
+    display: block !important;
+    padding: 16pt 0;
+    border-bottom: 2pt solid #1A4B84;
+    margin-bottom: 16pt;
+  }
+
+  .print-header h1 {
+    font-size: 18pt;
+    color: #1A4B84;
+    margin: 0;
+  }
+
+  .print-header p {
+    font-size: 10pt;
+    color: #4a5568;
+    margin: 4pt 0 0;
+  }
+
+  /* Plan rows print cleanly */
+  .plan-row-card {
+    break-inside: avoid;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: none !important;
+    margin-bottom: 8pt;
+    page-break-inside: avoid;
+  }
+
+  /* Remove interactive elements */
+  select,
+  input[type="date"],
+  input[type="text"] {
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  /* Ensure all tabs print */
+  .print-all-tabs {
+    display: block !important;
+  }
+
+  /* Page margins */
+  @page {
+    margin: 0.75in;
+    size: letter;
+  }
+}

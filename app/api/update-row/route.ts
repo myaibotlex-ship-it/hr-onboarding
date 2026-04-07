@@ -1,14 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+import { createServerSupabase } from "@/lib/supabase-server";
 
 // PATCH: update a specific row within a submission's plan_data
 export async function PATCH(req: NextRequest) {
   try {
+    const supabase = createServerSupabase();
     const { submissionId, tabName, rowId, updates } = await req.json();
 
     // Fetch current plan_data
@@ -31,7 +27,7 @@ export async function PATCH(req: NextRequest) {
 
     const { error: updateErr } = await supabase
       .from("hr_onboarding_submissions")
-      .update({ plan_data: planData })
+      .update({ plan_data: planData, updated_at: new Date().toISOString() })
       .eq("id", submissionId);
 
     if (updateErr) throw updateErr;
